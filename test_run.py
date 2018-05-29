@@ -59,7 +59,7 @@ try:
     coeff_set = np.array([first_coeff, last_coeff])
     loc_set = np.array([0, x_len])
     
-    
+    pts = np.column_stack((x, y))
     
     except:
         
