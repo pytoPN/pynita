@@ -6,7 +6,7 @@ import math
 import utility_funs as uf
 
 #%%
-os.chdir(r'C:/Users/feng/Documents/pynita')
+os.chdir(r'/Users/leyang/Documents/AU-projects/pynita')
 
 #%%
 test_data = pd.read_csv('./input/test_data.csv')
@@ -35,6 +35,7 @@ px = px[unq_idx]
 date_vec = date_vec[unq_idx]
 doy_vec = doy_vec[unq_idx]
 
+#%%
 try:
     x = date_vec 
     y = px 
@@ -53,13 +54,41 @@ try:
          raise ValueError('Not enough data pairs!')
     
     first_coeff = np.percentile(y[0:(filt_dist-1)], pct, interpolation='midpoint') # use 'midpoint' to mimic matlab
-    last_coeff = np.percentile(y[-filt_dist:],pct, interpolation='midpoint');
+    last_coeff = np.percentile(y[-filt_dist:],pct, interpolation='midpoint')
 
     knot_set = np.array([x[0], x[-1]])      
     coeff_set = np.array([first_coeff, last_coeff])
-    loc_set = np.array([0, x_len])
+    loc_set = np.array([0, x_len - 1])
     
     pts = np.column_stack((x, y))
+    
+    dist_init = uf.calDistance(knot_set, coeff_set, pts)
+    mae_lin = calMae(dist_init)
+    
+    if (mae_lin/noise > bail_thresh) & compute_mask == 1:
+        
+        mae_ortho = []
+        mae_ortho.append(mae_lin)
+        
+        for i in range(1, max_complex):
+            
+            del dist
+            dist = uf.calDistance(knot_set, coeff_set, pts)
+            cand_idx, coeff = findCandidate(dist, filt_dist, pct, y, loc_set, filter_opt);
+            
+            if cand_idx == -999:
+                break
+            
+            knot_set, coeff_set, coeff_indices = uf.updateknotcoeffSet(knot_set, coeff_set, loc_set, x, cand_idx, coeff)
+            dist_new = uf.calDistance(knot_set, coeff_set, pts)
+            mae_ortho.append(calMae(dist_new))
+         
+        
+        
+        
+    
+    
+    
     
     except:
         
