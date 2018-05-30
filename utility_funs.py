@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import math
+from scipy import stats  
 
 #%%
 def filterLimits(x, y, doy_vec, value_limits, date_limits, doy_limits):
@@ -152,4 +154,48 @@ def updateknotcoeffSet(knot_set, coeff_set, loc_set, x, cand_idx, coeff):
     loc_set = np.unique(np.append(loc_set, cand_idx))
 
     return knot_set, coeff_set, loc_set 
-  
+
+#%%
+def genKeepIdx(keep_knots, keep_coeffs, pts, pct, y_pos_flags):
+    if len(keep_knots) - 2 > 0:
+        mae_iter_ortho = maeEvaforKnotRemoval(keep_knots, keep_coeffs, pts, y_pos_flags, pct)
+        mae_iter_ortho = np.array(mae_iter_ortho)
+        remove_idx = mae_iter_ortho.argmin() + 1 # jump ahead since mae_iter_ortho only coresponding to inner knots 
+        keep_idx = list(range(0, len(keep_knots)))
+        removed = keep_idx.pop(remove_idx)
+    else:
+        keep_idx = [0, len(keep_knots)-1]
+
+    return keep_idx
+
+#%%
+def maeEvaforKnotRemoval(knot_set, coeff_set, pts, y_pos_flags, pct):
+    mae_iter_ortho = []
+    for i in range(1, len(knot_set) - 1): # evaluating only inner knots
+        remove_idx = i
+        new_knot_set = np.delete(knot_set, remove_idx)
+        new_coeff_set = np.delete(coeff_set, remove_idx)
+        
+        dist = calDistance(new_knot_set, new_coeff_set, pts)
+        
+        ortho_err = dist.min(axis=1)
+        ortho_err[y_pos_flags] = ortho_err[y_pos_flags] * pct
+        ortho_err[~y_pos_flags] = ortho_err[~y_pos_flags] * (100 - pct) 
+        mae_iter_ortho.append(ortho_err.mean())
+    
+    return mae_iter_ortho
+
+#%%
+def calBIC(ortho_err, knot_set, penalty):
+    # BIC acccumulation
+    positive_flags = ortho_err > 0 # in case a value is exactly 0
+    
+    
+    pars = stats.lognorm.fit(ortho_err[positive_flags])
+    loglik = -1 * stats.lognorm.nnlf(pars, ortho_err[positive_flags])
+
+    num_segs = len(knot_set)-1
+
+    bic_remove = -2 * loglik + penalty * num_segs * math.log(len(ortho_err))
+ 
+    return bic_remove
