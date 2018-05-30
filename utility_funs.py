@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 #%%
 def filterLimits(x, y, doy_vec, value_limits, date_limits, doy_limits):
@@ -108,23 +109,47 @@ def calDistance(knot_set, coeff_set, pts):
     return dist_mat
 
 #%%
+def calMae(dist):
+    dist = dist.min(axis=1)
+    mae = dist.mean()
+    return mae
+
+#%%
+def findCandidate(dist, filt_dist, pct, 
+                  y, loc_set, filter_opt='movcv'):
     
+    dist = dist.min(axis=1)
+    
+    #mov_mean = pd.Series(list(dist)).rolling(window=filt_dist, closed='both').mean()    
+    
+    mov_mean = pd.rolling_mean(dist, filt_dist, min_periods=1)
+    mov_std = pd.rolling_std(dist, filt_dist, min_periods=1)
+    
+    if filter_opt == 'movcv':
+        search_series = (mov_mean / mov_std)
         
+    invalid_ss_idx = list(set(list(range(0,filt_dist)) + 
+                              list(range(len(search_series) - filt_dist, len(search_series))) + 
+                              list(loc_set)))
+    search_series_inner = np.delete(search_series, invalid_ss_idx, None) # the N-1 search_series got flatten in here
+    
+    if len(search_series_inner) == 0:
+        cand_idx = -999
+        coeff = -999 
+    else:
+        cand_idx = int(np.where(search_series.flatten() == search_series_inner.max())[0])
+        cand_idx_filt = list(range(int(cand_idx - ((filt_dist - 1) / 2)), int(cand_idx + ((filt_dist - 1) / 2) + 1)))
+        coeff = np.percentile(y[cand_idx_filt], pct, interpolation='midpoint')
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+    return cand_idx, coeff
+
+#%%
+def updateknotcoeffSet(knot_set, coeff_set, loc_set, x, cand_idx, coeff):
+    knot_val = x[cand_idx]
+    knot_set = np.unique(np.append(knot_set, knot_val))
+    new_knot_loc = int(np.where(knot_set == knot_val)[0])
+    coeff_set = np.insert(coeff_set, new_knot_loc, coeff)
+    loc_set = np.unique(np.append(loc_set, cand_idx))
+
+    return knot_set, coeff_set, loc_set 
+  
