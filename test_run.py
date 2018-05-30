@@ -2,7 +2,6 @@
 import os 
 import numpy as np
 import pandas as pd
-import math
 import utility_funs as uf
 
 #%%
@@ -37,6 +36,7 @@ doy_vec = doy_vec[unq_idx]
 
 #%%
 try:
+    
     x = date_vec 
     y = px 
     
@@ -63,7 +63,7 @@ try:
     pts = np.column_stack((x, y))
     
     dist_init = uf.calDistance(knot_set, coeff_set, pts)
-    mae_lin = calMae(dist_init)
+    mae_lin = uf.calMae(dist_init)
     
     if (mae_lin/noise > bail_thresh) & compute_mask == 1:
         
@@ -74,21 +74,106 @@ try:
             
             del dist
             dist = uf.calDistance(knot_set, coeff_set, pts)
-            cand_idx, coeff = findCandidate(dist, filt_dist, pct, y, loc_set, filter_opt);
+            cand_idx, coeff = uf.findCandidate(dist, filt_dist, pct, y, loc_set, filter_opt);
             
             if cand_idx == -999:
                 break
             
             knot_set, coeff_set, coeff_indices = uf.updateknotcoeffSet(knot_set, coeff_set, loc_set, x, cand_idx, coeff)
             dist_new = uf.calDistance(knot_set, coeff_set, pts)
-            mae_ortho.append(calMae(dist_new))
-         
+            mae_ortho.append(uf.calMae(dist_new))
         
+            complexity_count = len(knot_set)-1
+                  
+            mae_final = mae_ortho(complexity_count)
+                
         
+            knots_max = knot_set
+            coeffs_max = coeff_set
+                
+            keep_knots = knot_set
+            keep_coeffs = coeff_set
+                 
+            yinterp1 = np.interp(knots_max, coeffs_max, x ) # method linear as default
+            y_pos_flags = (y - yinterp1) > 0  
+             
+             
+            keep_idx = []
+            mae_ortho_holder = []
+            bic_remove = []
+            knot_storage = []
+            coeff_storage = []
+             
+            for i in range(0, complexity_count - (min_complex - 1)):
+             
+                keep_idx.append(uf.genKeepIdx(keep_knots,keep_coeffs,pts,pct,y_pos_flags))
+           
+                del dist
+                dist = uf.calDistance(keep_knots,keep_coeffs,pts)
+                ortho_err = dist.min(axis=1)
+                mae_ortho_holder.append(uf.calMae(dist))
+                      
+                ortho_err[y_pos_flags] = ortho_err[y_pos_flags] * pct
+                ortho_err[~y_pos_flags] = ortho_err[~y_pos_flags] * (100-pct)
+            
+                bic_remove.append(uf.calBIC(ortho_err, keep_knots, penalty))  
         
+                if i == 1:
+                    knot_storage.append(knots_max)
+                    coeff_storage.append(coeffs_max)
+                else: 
+                    knot_storage.append(keep_knots[keep_idx[i]])
+                    coeff_storage.append(keep_coeffs[keep_idx[i]])
+                     
+                    keep_coeffs.append(keep_idx[i])
+                    keep_knots.append(keep_idx[i])
+            
+                bic_idx = np.where(bic_remove == bic_remove.min)[0]
+                keep_coeffs = coeff_storage[bic_idx]
+                keep_knots = knot_storage[bic_idx]
+                mae_final = mae_ortho_holder[bic_idx]    
+                     
+                complexity = len(keep_knots) - 1
+                final_knots = keep_knots
+                final_coeffs = keep_coeffs
+                
+                mae_final_ortho = mae_final
+                mae_linear = mae_lin
+                noise_out = noise
+    else:
+        complexity = 1
+        final_knots = [x.min, x.max ]
+        final_coeffs = [first_coeff, last_coeff]
+        mae_final_ortho = mae_lin
+        mae_linear = mae_lin
+        noise_out = noise
+     
+    rises = np.diff(final_coeffs)
+    runs = np.diff(final_knots)   
+    runs_days = runs / 1000 * 365
     
-    
-    
-    
-    except:
+except ValueError as err:
+        complexity = -999
+        final_knots = -999
+        final_coeffs = -999
+        mae_final_ortho = -999
+        mae_linear = -999
+        noise_out = -999
+        rises = -999
+        runs = -999
+        runs_days = -999
+        pts = -999
+
+results_cell = {'complexity': complexity,
+                'final_knots': final_knots,
+                'final_coeffs': final_coeffs,  
+                'mae_linear': mae_linear,
+                'mae_final_ortho': mae_final_ortho,
+                'noise_out': noise_out,
+                'rises': rises, 
+                'runs': runs,
+                'runs_days': runs_days,
+                'pts': pts}
+
+#return results_cell    
         
