@@ -136,22 +136,22 @@ def findCandidate(dist, filt_dist, pct,
     search_series_inner = np.delete(search_series, invalid_ss_idx, None) # the N-1 search_series got flatten in here
     
     if len(search_series_inner) == 0:
-        cand_idx = -999
+        cand_loc = -999
         coeff = -999 
     else:
-        cand_idx = int(np.where(search_series.flatten() == search_series_inner.max())[0])
-        cand_idx_filt = list(range(int(cand_idx - ((filt_dist - 1) / 2)), int(cand_idx + ((filt_dist - 1) / 2) + 1)))
-        coeff = np.percentile(y[cand_idx_filt], pct, interpolation='midpoint')
+        cand_loc = int(np.where(search_series.flatten() == search_series_inner.max())[0])
+        cand_loc_filt = list(range(int(cand_loc - ((filt_dist - 1) / 2)), int(cand_loc + ((filt_dist - 1) / 2) + 1)))
+        coeff = np.percentile(y[cand_loc_filt], pct, interpolation='midpoint')
         
-    return cand_idx, coeff
+    return cand_loc, coeff
 
 #%%
-def updateknotcoeffSet(knot_set, coeff_set, loc_set, x, cand_idx, coeff):
-    knot_val = x[cand_idx]
+def updateknotcoeffSet(knot_set, coeff_set, loc_set, x, cand_loc, coeff):
+    knot_val = x[cand_loc]
     knot_set = np.unique(np.append(knot_set, knot_val))
     new_knot_loc = int(np.where(knot_set == knot_val)[0])
     coeff_set = np.insert(coeff_set, new_knot_loc, coeff)
-    loc_set = np.unique(np.append(loc_set, cand_idx))
+    loc_set = np.unique(np.append(loc_set, cand_loc))
 
     return knot_set, coeff_set, loc_set 
 
