@@ -203,9 +203,10 @@ def calBIC(ortho_err, knot_set, penalty):
 
 #%%
 def nita_px(px, date_vec, doy_vec, 
-            value_limits, doy_limits, date_limits, bail_thresh, noise_thresh,
-            penalty, filt_dist, pct, max_complex, min_complex,
-            compute_mask, filter_opt):
+            value_limits=[-1,1], doy_limits=[1, 365], date_limits=[-9999, 9999],
+            bail_thresh=1, noise_thresh=1,
+            penalty=1, filt_dist=3, pct=75, max_complex=10, min_complex=1,
+            compute_mask=True, filter_opt='movcv'):
 # documentation: 
 #   input arguments:
 #     data: 
@@ -273,7 +274,7 @@ def nita_px(px, date_vec, doy_vec,
 
     # ---
     # 2. NITA build
-        if (mae_lin/noise > bail_thresh) & compute_mask == 1:
+        if (mae_lin/noise > bail_thresh) & compute_mask == True:
             
             mae_ortho = []
             mae_ortho.append(mae_lin)
@@ -412,7 +413,7 @@ def viewNITA(px, date_vec, doy_vec, results_dic, showdata='fit', colorbar='off')
                 fig.colorbar(i)
         else:
             raise ValueError('in-valid showdata option!')
-        print('bail_cut = %s \nfit_count = %s' % (bail_cut, fit_count))
+        print('bail_cut = {0} \nfit_count = {1}'.format(bail_cut, fit_count))
         
     except: 
         plt.plot()

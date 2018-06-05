@@ -41,5 +41,3 @@ sys.getsizeof(results_dic)
 
 nita.viewNITA(px, date_vec, doy_vec, results_dic, showdata='fit', colorbar='on')
 
-
-
