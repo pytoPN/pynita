@@ -10,6 +10,7 @@ Copyright (c)
 
 import os
 import pandas as pd
+import numpy as np
 from osgeo import gdal
 from pynita.utils import general 
 
@@ -66,8 +67,8 @@ class DataLoader:
         stackdate_tb = pd.read_csv(stackdate_path)
         sis = list(stackdate_tb['system:index']) # system_index_s       
         all_info = [general.SystemIndexBreaker(si) for si in sis]  
-        doy_vec = [item[3] for item in all_info]
-        date_vec = [item[4] for item in all_info] # in distributed date 
+        doy_vec = np.array([item[3] for item in all_info])
+        date_vec = np.array([item[4] for item in all_info]) # in distributed date 
         
         # then deal with stack 
         fc = gdal.Open(stack_path)
