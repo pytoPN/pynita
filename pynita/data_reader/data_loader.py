@@ -10,7 +10,6 @@ Copyright (c)
 
 import os
 import pandas as pd
-#import rasterio
 from osgeo import gdal
 from pynita.utils import general 
 
@@ -71,19 +70,9 @@ class DataLoader:
         date_vec = [item[4] for item in all_info] # in distributed date 
         
         # then deal with stack 
-        import numpy as np
-
         fc = gdal.Open(stack_path)
-        stack = fc.GetRasterBand().ReadAsArray()
-        
-        
-        
-        
-        stack_obj = rasterio.open(stack_path)
-        stack = stack_obj.read()
-        stack_obj.close()
+        stack = fc.ReadAsArray() # t-x-y
+        prj = fc.GetProjection()
+        fc = None
 
-        return stack, date_vec, doy_vec, crs
-
-        
-        
+        return stack, date_vec, doy_vec, prj
