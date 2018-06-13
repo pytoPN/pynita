@@ -41,3 +41,17 @@ sys.getsizeof(results_dic)
 
 nita.viewNITA(px, date_vec, doy_vec, results_dic, showdata='fit', colorbar='on')
 
+
+
+
+        srs=osr.SpatialReference(wkt=prj)
+
+
+#%%
+sys.stdout = Logger(cfg)
+log_file = os.path.join(cfg.OutputFolder, 'logfile.log')
+
+with open(log_file, 'w') as sys.stdout.log:
+    cfg.log_info()
+    print('something')
+#%%

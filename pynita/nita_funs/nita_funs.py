@@ -200,8 +200,9 @@ def calBIC(ortho_err, knot_set, penalty):
     bic_remove = -2 * loglik + penalty * num_segs * math.log(len(ortho_err))
  
     return bic_remove
-
+    
 #%%
+##TODO: better exception handling by type
 def nita_px(px, date_vec, doy_vec, 
             value_limits=[-1,1], doy_limits=[1, 365], date_limits=[-9999, 9999],
             bail_thresh=1, noise_thresh=1,
@@ -247,7 +248,8 @@ def nita_px(px, date_vec, doy_vec,
         y = px 
     
         x, y, doy_vec = filterLimits(x, y, doy_vec, value_limits, date_limits, doy_limits)
-    
+        
+        # warning will be raised by numpy when len(y) == 1
         noise = np.median(np.absolute(np.diff(y)))
     
         diff_holder = np.diff(y)
@@ -357,7 +359,7 @@ def nita_px(px, date_vec, doy_vec,
         runs = np.diff(knots_final)   
         runs_days = runs / 1000 * 365
     
-    except ValueError as err:
+    except:
         complexity_final = -999
         knots_final = -999
         coeffs_final = -999
@@ -383,40 +385,55 @@ def nita_px(px, date_vec, doy_vec,
     return results_dic    
 
 #%%
-def viewNITA(px, date_vec, doy_vec, results_dic, showdata='fit', colorbar='off'):
-    try:
+# TODO: come up with a good way to arrange colorbar when doing panel plot     
+def viewNITA(px, date_vec, doy_vec, 
+             results_dic, 
+             showdata='fit', colorbar=True, title='', 
+             fig=None, ax=None):
+    # decide the existence of fig and ax (only check one of them is enough)
+    if type(fig).__name__ == 'NoneType':
+        fig, ax = plt.subplots()
+
+    try: 
+        # grab lines and data pairs 
+        if type(results_dic['final_knots']).__name__ == 'int':
+            raise TypeError('nita skipped!')
+        
         knot_set = results_dic['final_knots']
         coeff_set = results_dic['final_coeffs']
-        pts = results_dic['pts']
-        fit_x = pts[:,0]
-        fit_y = pts[:,1]
         bail_cut = results_dic['mae_linear'] / results_dic['noise']
-        fit_count = len(fit_y)
-        
-        fig, ax = plt.subplots()
-        if showdata == 'all':
-            i = ax.scatter(date_vec, px, c=doy_vec)
-            ax.plot(knot_set, coeff_set, 'ro', mfc='none')
-            ax.plot(knot_set, coeff_set, 'r-')
-            ax.set_xlim([date_vec.min(), date_vec.max()])
-            ax.set_ylim([px.min(), px.max()])
-            if colorbar == 'on':
-                fig.colorbar(i)
-        elif showdata == 'fit':
-            doy_fit = np.round(((fit_x/1000 - np.floor_divide(fit_x, 1000)) * 365))
-            i = ax.scatter(fit_x, fit_y, c=doy_fit)
-            ax.plot(knot_set, coeff_set, 'ro', mfc='none')
-            ax.plot(knot_set, coeff_set, 'r-')
-            ax.set_xlim([fit_x.min(), fit_x.max()])
-            ax.set_ylim([fit_y.min(), fit_y.max()])
-            if colorbar == 'on':
-                fig.colorbar(i)
+        fit_pts = results_dic['pts']
+        fit_count = len(fit_pts[:,0])
+        if showdata == 'fit':
+            plot_x = fit_pts[:,0]
+            plot_y = fit_pts[:,1]
+            plot_doy = np.round(((plot_x/1000 - np.floor_divide(plot_x, 1000)) * 365))
         else:
-            raise ValueError('in-valid showdata option!')
+            plot_x = date_vec
+            plot_y = px
+            plot_doy = doy_vec
+ 
+        # do the plotting
+        mappable = ax.scatter(plot_x, plot_y, c=plot_doy)
+        ax.plot(knot_set, coeff_set, 'ro', mfc='none')
+        ax.plot(knot_set, coeff_set, 'r-')
+        ax.set_xlim([plot_x.min(), plot_x.max()])
+        ax.set_ylim([plot_y.min(), plot_y.max()])
+        ax.set_title(title)
+        if colorbar:
+            fig.colorbar(mappable)
         print('bail_cut = {0} \nfit_count = {1}'.format(bail_cut, fit_count))
-        
-    except: 
-        plt.plot()
-        plt.text(0, 0, 'something\'s wrong')
+    except TypeError:
+        plt.cla()
+        ax.set_xlim([0, 1])
+        ax.set_ylim([0, 1])
+        ax.text(0.3, 0.3, 'something wrong in nita')
+        ax.set_title(title)
+    except:
+        plt.cla()
+        ax.set_xlim([0, 1])
+        ax.set_ylim([0, 1])
+        ax.text(0.3, 0.3, 'something\'s wrong')
+        ax.set_title(title)    
             
             

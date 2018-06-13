@@ -9,6 +9,7 @@ Copyright (c)
 """
 
 import os
+import logging
 from configobj import ConfigObj
 
 class ConfigReader:
@@ -71,7 +72,6 @@ class ConfigReader:
             self.pct = float(np['pct'])
             self.max_complex = int(np['max_complex'])
             self.min_complex = int(np['min_complex'])
-            self.compute_mask = np['compute_mask'] == 'True'
             self.filter_opt = np['filter_opt']
             # TODO: add value check in here
         else: 
@@ -90,7 +90,6 @@ class ConfigReader:
             self.pct_dg = float(npd['pct_dg'])
             self.max_complex_dg = int(npd['max_complex_dg'])
             self.min_complex_dg = int(npd['min_complex_dg'])
-            self.compute_mask_dg = npd['compute_mask_dg'] == 'True'
             self.filter_opt_dg = npd['filter_opt_dg']
             # TODO: add value check in here
         else: 
@@ -114,10 +113,10 @@ class ConfigReader:
 
     def log_info(self):
 
-        print('ProjectName : {}'.format(self.ProjectName))
-        print('InputFolder : {}'.format(self.InputFolder))
-        print('OutputFolder: {}'.format(self.OutputFolder))
-        print('ptsFn: {}'.format(self.ptsFn))
-        print('stackdateFn: {}'.format(self.stackdateFn))
-        print('stackFn: {}'.format(self.stackFn))
+        logging.info('Project Name : {}'.format(self.ProjectName))
+        logging.info('Input Folder : {}'.format(self.InputFolder))
+        logging.info('Output Folder: {}'.format(self.OutputFolder))
+        logging.info('Point Data: {}'.format(self.ptsFn))
+        logging.info('Stack Date Data: {}'.format(self.stackdateFn))
+        logging.info('Stack Data: {}'.format(self.stackFn))
         
