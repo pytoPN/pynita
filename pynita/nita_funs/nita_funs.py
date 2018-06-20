@@ -436,5 +436,36 @@ def viewNITA(px, date_vec, doy_vec,
         ax.text(0.3, 0.3, 'something\'s wrong')
         ax.set_title(title)    
             
+#%%           
+def nita_stack_wrapper(stack_2d, compute_mask_1d, param_dic, i):
+    
+    # unpack the param_dic
+    date_vec     = param_dic['date_vec']     
+    doy_vec      = param_dic['doy_vec']      
+    value_limits = param_dic['value_limits'] 
+    doy_limits   = param_dic['doy_limits']   
+    date_limits  = param_dic['date_limits']  
+    bail_thresh  = param_dic['bail_thresh']  
+    noise_thresh = param_dic['noise_thresh']   
+    penalty      = param_dic['penalty']      
+    filt_dist    = param_dic['filt_dist']    
+    pct          = param_dic['pct']          
+    max_complex  = param_dic['max_complex']  
+    min_complex  = param_dic['min_complex']  
+    filter_opt   = param_dic['filter_opt']   
+    
+    # decide the value of compute mask 
+    compute_mask = compute_mask_1d[i]
+    compute_mask = compute_mask == 1
+    
+    # get the value of px
+    px = stack_2d[:,i]
+    
+    results_dic = nita_px(px, date_vec, doy_vec, 
+                          value_limits, doy_limits, date_limits,
+                          bail_thresh, noise_thresh,
+                          penalty, filt_dist, pct, max_complex, min_complex,
+                          compute_mask, filter_opt)
 
+    return results_dic
     

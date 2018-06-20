@@ -9,8 +9,9 @@ Copyright (c)
 #import sys
 import numpy as np
 import time 
+import itertools 
 from joblib import Parallel, delayed
-import multiprocessing
+from multiprocessing import Pool
 import matplotlib.pyplot as plt
 
 from pynita.data_reader.data_loader import DataLoader
@@ -139,3 +140,89 @@ class nitaObj:
             return results_dic
         return  
 
+    def runStack(self, shape='1d', parallel=True, workers=2):
+        # check if the stack is loaded  
+        if type(self.stack).__name__ == 'NoneType':
+            raise RuntimeError('stack not loaded yet')
+            
+        # check if the mask exists
+        # if non-existence (setMask() method never called), assign 'global' compute_mask as True (for each pixel in the stack)
+        # if set, check dimension 
+        if type(self.compute_mask).__name__ != 'ndarray':
+            compute_mask = np.ones(self.stack.shape[1:3])
+        else:
+            compute_mask = self.compute_mask
+            if self.compute_mask.shape != self.stack.shape[1:3]:
+                raise RuntimeError('ERROR: user_mask dimensions does not match stack dimensions! \nUse setMask() to reset')
+                
+        # reduce dimension and generate reference vectors 
+        # the read-in image stack is t-n-m so reduce to t-(n*m)
+        #                            | | |              |   |
+        #                            a b c              a   d
+        # along (d), the (b) would become b1, b1, b1,..., b2, b2, b2......, bn, bn, bn,.....
+        # while c wile become c1, c2, ..., cn, c1, c2, ..., cn, ......, c1, c2, ..., cn  
+        stack_shape = self.stack.shape # (t, n, m)
+        stack_2d = self.stack.reshape((stack_shape[0], stack_shape[1]*stack_shape[2]))
+        stack_2d_shape = stack_2d.shape
+        t_vec = np.arange(0, stack_shape[0]) 
+        nm_vec = np.arange(0, stack_2d.shape[1])
+        n_vec = np.floor_divide(nm_vec, stack_shape[2])
+        m_vec = np.mod(nm_vec, stack_shape[2])
+        
+        # reduce dimension for compute mask 
+        compute_mask_1d = compute_mask.flatten()
+        
+        # pack other arguments into a dic 
+        param_dic = {}
+        param_dic['date_vec'] = self.stack_dates
+        param_dic['doy_vec'] = self.stack_doy
+        param_dic['value_limits'] = self.cfg.value_limits
+        param_dic['doy_limits'] = self.cfg.doy_limits
+        param_dic['date_limits'] = self.cfg.date_limits
+        param_dic['bail_thresh'] = self.cfg.bail_thresh
+        param_dic['noise_thresh'] = self.cfg.noise_thresh       
+        param_dic['penalty'] = self.cfg.penalty    
+        param_dic['filt_dist'] = self.cfg.filt_dist
+        param_dic['pct'] = self.cfg.pct      
+        param_dic['max_complex'] = self.cfg.max_complex
+        param_dic['min_complex'] = self.cfg.min_complex
+        param_dic['filter_opt'] = self.cfg.filter_opt 
+
+        iterable = [(stack_2d, compute_mask_1d, param_dic, i) for i in range(stack_2d_shape[1])]
+        pool = Pool(workers)
+        results_dics = pool.starmap(nf.nita_stack_wrapper, iterable)
+        pool.close()
+        pool.join()
+
+        self.test = results_dics
+
+if __name__ == '__main__':
+    nita = nitaObj(ini)
+    
+    # tests with points 
+    #nita.loadPts(info_column='Name')
+    #nita.runPts([9999], compute_mask=True, plot=True, showdata='fit', colorbar=False, plot_title=True)
+    #results_dic = nita.runPts([4], compute_mask=True, plot=True, showdata='fit', colorbar=True, plot_title=True)    
+    
+    # tests with stack 
+    nita.loadStack()
+
+    print('worker - 1')
+    t = time.time()
+    nita.runStack(workers=1)
+    print(time.time() - t)
+    
+    print('worker - 2')
+    t = time.time()
+    nita.runStack(workers=2)
+    print(time.time() - t)
+
+    #print('worker - 3')
+    #t = time.time()
+    #nita.runStack(workers=3)
+    #print(time.time() - t)
+
+    #print('worker - 4')
+    #t = time.time()
+    #nita.runStack(workers=4)
+    #print(time.time() - t)
