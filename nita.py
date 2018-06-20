@@ -9,8 +9,8 @@ Copyright (c)
 #import sys
 import numpy as np
 import time 
-from joblib import Parallel, delayed
-import multiprocessing
+from tqdm import tqdm
+from multiprocessing import Pool
 import matplotlib.pyplot as plt
 
 from pynita.data_reader.data_loader import DataLoader
@@ -139,3 +139,69 @@ class nitaObj:
             return results_dic
         return  
 
+    def runStack(self, shape='1d', parallel=True, workers=2):
+            # check if the stack is loaded  
+            if type(self.stack).__name__ == 'NoneType':
+                raise RuntimeError('stack not loaded yet')
+                
+            # check if the mask exists
+            # if non-existence (setMask() method never called), assign 'global' compute_mask as True (for each pixel in the stack)
+            # if set, check dimension 
+            if type(self.compute_mask).__name__ != 'ndarray':
+                compute_mask = np.ones(self.stack.shape[1:3])
+            else:
+                compute_mask = self.compute_mask
+                if self.compute_mask.shape != self.stack.shape[1:3]:
+                    raise RuntimeError('ERROR: user_mask dimensions does not match stack dimensions! \nUse setMask() to reset')
+            
+            # gether info of stack 
+            stack_shape = self.stack.shape # (t, n, m)
+            
+            if parallel:
+                pass
+            else:
+                value_limits = self.cfg.value_limits
+                doy_limits = self.cfg.doy_limits
+                date_limits = self.cfg.date_limits
+                bail_thresh = self.cfg.bail_thresh
+                noise_thresh = self.cfg.noise_thresh      
+                penalty = self.cfg.penalty
+                filt_dist = self.cfg.filt_dist
+                pct = self.cfg.pct
+                max_complex = self.cfg.max_complex
+                min_complex = self.cfg.min_complex
+                filter_opt = self.cfg.filter_opt
+                date_vec = self.stack_dates   
+                doy_vec = self.stack_doy
+                
+                for n in tqdm(range(stack_shape[1])):
+                    for m in range(stack_shape[2]):
+                    
+                        compute_mask_run = compute_mask[n, m]
+                        compute_mask_run = compute_mask == 1
+                    
+                        px = self.stack[:, n, m]
+                    
+                        results_dic = nf.nita_px(px, date_vec, doy_vec, 
+                                                 value_limits, doy_limits, date_limits,
+                                                 bail_thresh, noise_thresh,
+                                                 penalty, filt_dist, pct, max_complex, min_complex,
+                                                 compute_mask_run, filter_opt)
+    
+            
+
+if __name__ == '__main__':
+    nita = nitaObj(ini)
+    
+    # tests with points 
+    #nita.loadPts(info_column='Name')
+    #nita.runPts([9999], compute_mask=True, plot=True, showdata='fit', colorbar=False, plot_title=True)
+    #results_dic = nita.runPts([4], compute_mask=True, plot=True, showdata='fit', colorbar=True, plot_title=True)    
+    
+    # tests with stack 
+    nita.loadStack()
+
+    print('no-parallel')
+    t = time.time()
+    nita.runStack(parallel=False)
+    print(time.time() - t)
