@@ -57,6 +57,12 @@ class DataLoader:
         pts_tb = pts_tb.assign(date_dist=[item[4] for item in all_info])
         pts_tb = pts_tb.drop(columns=['system:index'])
 
+        # generate a reference table only contains ONJECTID and info_column (if provided)
+        if info_column != 'none':
+            self.ref_tb = pts_tb[['OBJECTID', info_column]].drop_duplicates()
+        else:
+            self.ref_tb = pts_tb['OBJECTID'].drop_duplicates()
+
         return pts_tb
 
     def load_stack(self): 
