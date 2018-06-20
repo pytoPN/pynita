@@ -436,4 +436,5 @@ def viewNITA(px, date_vec, doy_vec,
         ax.text(0.3, 0.3, 'something\'s wrong')
         ax.set_title(title)    
             
-            
+
+    

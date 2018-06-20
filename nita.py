@@ -6,8 +6,11 @@ Created on Jun 4, 2018
 License:  
 Copyright (c) 
 """
-import sys
+#import sys
 import numpy as np
+import time 
+from joblib import Parallel, delayed
+import multiprocessing
 import matplotlib.pyplot as plt
 
 from pynita.data_reader.data_loader import DataLoader
@@ -53,20 +56,14 @@ class nitaObj:
         # properties
         self.stack_shape = '{0} rows {1} columns {2} layers'.format(self.stack.shape[1], self.stack.shape[2], self.stack.shape[0])
         
-    def setMask(self, user_mask):
-        if type(self.stack).__name__ == 'NoneType':
-            print('stack not loaded yet, loading now...')
-            self.loadStack()
-        
+    def setMask(self, user_mask):    
         if type(user_mask).__name__ != 'ndarray':
             print('convert user_mask into numpy array')
-            user_mask = np.array(user_mask)
+            user_mask = np.array(user_mask)    
         
-        if user_mask.shape == self.stack.shape[1:3]:
-            pass
-        else:
-            raise RuntimeError('ERROR: user_mask dimensions does not match stack dimensions')
-            
+        if sum(np.unique(user_mask)) != 1:
+            raise RuntimeError('only accept mask as matrix containing 1 or 0, \nplease re-prepare your mask')
+        
         self.compute_mask = user_mask
     
     def runPts(self, OBJECTIDs, compute_mask=True, 
@@ -75,7 +72,7 @@ class nitaObj:
         
         # check to see if pts are loaded 
         if type(self.pts).__name__ == 'NoneType':
-            raise RuntimeError('pts not loaded yet' )
+            raise RuntimeError('pts not loaded yet')
         
         # reload in case anything changed in the ini file 
         # TODO: got to be a better way to arrange this -- 
@@ -141,17 +138,4 @@ class nitaObj:
         if len(OBJECTIDs) == 1:
             return results_dic
         return  
-
-    def runStack():
-        
-        
-        
-        
-        
-        
-nita = nitaObj(ini)
-nita.loadPts(info_column='Name')
-nita.runPts([9999], compute_mask=True, plot=True, showdata='fit', colorbar=False, plot_title=True)
-results_dic = nita.runPts([4], compute_mask=True, plot=True, showdata='fit', colorbar=True, plot_title=True)
-
 
