@@ -8,9 +8,7 @@ Copyright (c)
 """
 #import sys
 import numpy as np
-import time 
-import itertools 
-from joblib import Parallel, delayed
+import time  
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
 
@@ -164,10 +162,10 @@ class nitaObj:
         stack_shape = self.stack.shape # (t, n, m)
         stack_2d = self.stack.reshape((stack_shape[0], stack_shape[1]*stack_shape[2]))
         stack_2d_shape = stack_2d.shape
-        t_vec = np.arange(0, stack_shape[0]) 
-        nm_vec = np.arange(0, stack_2d.shape[1])
-        n_vec = np.floor_divide(nm_vec, stack_shape[2])
-        m_vec = np.mod(nm_vec, stack_shape[2])
+        #t_vec = np.arange(0, stack_shape[0]) 
+        #nm_vec = np.arange(0, stack_2d.shape[1])
+        #n_vec = np.floor_divide(nm_vec, stack_shape[2])
+        #m_vec = np.mod(nm_vec, stack_shape[2])
         
         # reduce dimension for compute mask 
         compute_mask_1d = compute_mask.flatten()
@@ -187,14 +185,13 @@ class nitaObj:
         param_dic['max_complex'] = self.cfg.max_complex
         param_dic['min_complex'] = self.cfg.min_complex
         param_dic['filter_opt'] = self.cfg.filter_opt 
-
+        
         iterable = [(stack_2d, compute_mask_1d, param_dic, i) for i in range(stack_2d_shape[1])]
+        
         pool = Pool(workers)
         results_dics = pool.starmap(nf.nita_stack_wrapper, iterable)
         pool.close()
         pool.join()
-
-        self.test = results_dics
 
 if __name__ == '__main__':
     nita = nitaObj(ini)
@@ -207,22 +204,22 @@ if __name__ == '__main__':
     # tests with stack 
     nita.loadStack()
 
-    print('worker - 1')
-    t = time.time()
-    nita.runStack(workers=1)
-    print(time.time() - t)
+    #print('worker - 1')
+    #t = time.time()
+    #nita.runStack(workers=1)
+    #print(time.time() - t)
     
-    print('worker - 2')
-    t = time.time()
-    nita.runStack(workers=2)
-    print(time.time() - t)
+    #print('worker - 2')
+    #t = time.time()
+    #nita.runStack(workers=2)
+    #print(time.time() - t)
 
     #print('worker - 3')
     #t = time.time()
     #nita.runStack(workers=3)
     #print(time.time() - t)
 
-    #print('worker - 4')
-    #t = time.time()
-    #nita.runStack(workers=4)
-    #print(time.time() - t)
+    print('worker - 4')
+    t = time.time()
+    nita.runStack(workers=4)
+    print(time.time() - t)
