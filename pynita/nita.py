@@ -23,11 +23,12 @@ class nitaObj:
     
     def __init__(self, ini, log=False):
         
+        self.cfg = ConfigReader(ini)     
+        
         self.__log = log
         if self.__log:
             self.__logger = lg.setupLogger(self.cfg)
-            
-        self.cfg = ConfigReader(ini)       
+              
         self.pts = None
         self.stack = None
         self.stack_dates = None
@@ -194,32 +195,32 @@ class nitaObj:
         pool.join()
 
 if __name__ == '__main__':
-    nita = nitaObj(ini)
+    nita = nitaObj(ini, log=True)
     
     # tests with points 
     #nita.loadPts(info_column='Name')
     #nita.runPts([9999], compute_mask=True, plot=True, showdata='fit', colorbar=False, plot_title=True)
-    #results_dic = nita.runPts([4], compute_mask=True, plot=True, showdata='fit', colorbar=True, plot_title=True)    
+    #results_dic = nita.runPts([1], compute_mask=True, plot=True, showdata='fit', colorbar=True, plot_title=True)    
     
     # tests with stack 
-    nita.loadStack()
-
-    #print('worker - 1')
-    #t = time.time()
-    #nita.runStack(workers=1)
-    #print(time.time() - t)
-    
-    #print('worker - 2')
-    #t = time.time()
-    #nita.runStack(workers=2)
-    #print(time.time() - t)
-
-    #print('worker - 3')
-    #t = time.time()
-    #nita.runStack(workers=3)
-    #print(time.time() - t)
-
-    print('worker - 4')
-    t = time.time()
-    nita.runStack(workers=4)
-    print(time.time() - t)
+#    nita.loadStack()
+#
+#    print('worker - 4')
+#    t = time.time()
+#    nita.runStack(workers=4)
+#    print(time.time() - t)
+#
+#    print('worker - 3')
+#    t = time.time()
+#    nita.runStack(workers=3)
+#    print(time.time() - t)
+#    
+#    print('worker - 2')
+#    t = time.time()
+#    nita.runStack(workers=2)
+#    print(time.time() - t)
+#    
+#    print('worker - 1')
+#    t = time.time()
+#    nita.runStack(workers=1)
+#    print(time.time() - t)
