@@ -16,7 +16,7 @@ from tqdm import tqdm
 from data_reader.data_loader import DataLoader
 from data_reader.ini_reader import ConfigReader
 from nita_funs import nita_funs as nf
-from metrics.metric import stackMetrics, computeMetrics
+from metric_funs import metric_funs as mf
 import utils.logging as lg
 
 
@@ -307,7 +307,7 @@ class nitaObj:
         if not parallel: 
             metrics_dics_1d = []
             for results_dic in self.stack_results:
-                metrics_dic = computeMetrics(results_dic, vi_change_thresh, run_thresh, time_step)
+                metrics_dic = mf.computeMetrics(results_dic, vi_change_thresh, run_thresh, time_step)
                 metrics_dics_1d.append(metrics_dic)
         
         self.stack_metrics = metrics_dics_1d
