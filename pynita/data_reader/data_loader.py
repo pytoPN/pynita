@@ -12,7 +12,7 @@ import os
 import pandas as pd
 import numpy as np
 from osgeo import gdal
-from pynita.utils import general 
+from utils import general 
 
 class DataLoader:
     """The DataLoader class 

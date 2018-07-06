@@ -9,7 +9,6 @@ Copyright (c)
 """
 
 import os
-import logging
 from configobj import ConfigObj
 
 class ConfigReader:
@@ -27,8 +26,8 @@ class ConfigReader:
         self.ptsFn = p['ptsFn']
         self.stackdateFn = p['stackdateFn']
         self.stackFn = p['stackFn']
-        self.OutDir = self.create_dir(os.path.join(self.root, p['OutputFolder']))
-        self.OutputFolder = self.create_dir(os.path.join(self.OutDir, self.ProjectName))
+        self.OutDir = self.createDir(os.path.join(self.root, p['OutputFolder']))
+        self.OutputFolder = self.createDir(os.path.join(self.OutDir, self.ProjectName))
 
         # see if modules are in config file
         try:
@@ -99,24 +98,16 @@ class ConfigReader:
         if mp is not False:
             self.vi_change_thresh = float(mp['vi_change_thresh'])
             self.run_thresh = int(mp['run_thresh'])
+            self.time_step = float(mp['time_step'])
             # TODO: add value check in here
         else:
             raise RuntimeError('ERROR: [MetricsParameters] module not found')
 
-    def create_dir(self, pth):
+    def createDir(self, pth):
         """
         Check to see if the target path is exists.
         """
         if os.path.isdir(pth) is False:
             os.mkdir(pth)
         return pth
-
-    def log_info(self):
-
-        logging.info('Project Name : {}'.format(self.ProjectName))
-        logging.info('Input Folder : {}'.format(self.InputFolder))
-        logging.info('Output Folder: {}'.format(self.OutputFolder))
-        logging.info('Point Data: {}'.format(self.ptsFn))
-        logging.info('Stack Date Data: {}'.format(self.stackdateFn))
-        logging.info('Stack Data: {}'.format(self.stackFn))
         
