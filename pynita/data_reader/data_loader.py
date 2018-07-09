@@ -14,7 +14,7 @@ import numpy as np
 from osgeo import gdal
 from utils import general 
 
-class DataLoader:
+class dataLoader:
     """The DataLoader class 
     """
     def __init__(self, cfg):
@@ -80,6 +80,7 @@ class DataLoader:
         fc = gdal.Open(stack_path)
         stack = fc.ReadAsArray() # t-x-y
         prj = fc.GetProjection()
+        geotransform = fc.GetGeoTransform()
         fc = None
 
-        return stack, date_vec, doy_vec, prj
+        return stack, date_vec, doy_vec, prj, geotransform
