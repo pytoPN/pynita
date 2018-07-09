@@ -450,7 +450,7 @@ class nitaObj:
      
         return metrics_dic
     
-    def MI_complexity(self, plot=True, save=True, fn='complexity.tiff'):
+    def MI_complexity(self, plot=True, save=True, fn='complexity.tif'):
         
         # check if self.stack_results exists 
         try:
@@ -469,7 +469,7 @@ class nitaObj:
             dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)
     
-    def MI_distDate(self, option='middle', plot=True, save=True, fn='distdate.tiff'):
+    def MI_distDate(self, option='middle', plot=True, save=True, fn='distdate.tif'):
         
         # check if self.stack_metrics exists 
         try:
@@ -488,7 +488,7 @@ class nitaObj:
             dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)               
      
-    def MI_distDuration(self, plot=True, save=True, fn='distduration.tiff'):
+    def MI_distDuration(self, plot=True, save=True, fn='distduration.tif'):
 
         # check if self.stack_metrics exists 
         try:
@@ -506,7 +506,236 @@ class nitaObj:
         if save:
             dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)           
+     
+    def MI_distMag(self, plot=True, save=True, fn='distMag.tif'):
         
+        # check if self.stack_metrics exists 
+        try:
+            type(self.stack_metrics)
+        except AttributeError:
+            raise RuntimeError('stack metrics not calculated yet!')
+            
+        vals_1d = mf.MI_distMag(self.stack_metrics)
+        stack_shape = self.stack.shape
+        vals_2d = vals_1d.reshape(stack_shape[1:3])
+        
+        if plot: 
+            mf.plotMI(vals_2d)
+        
+        if save:
+            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+                      self.cfg.OutputFolder, fn)
+    
+    def MI_distSlope(self, plot=True, save=True, fn='distSlope.tif'):
+        
+        # check if self.stack_metrics exists 
+        try:
+            type(self.stack_metrics)
+        except AttributeError:
+            raise RuntimeError('stack metrics not calculated yet!')
+            
+        vals_1d = mf.MI_distSlope(self.stack_metrics)
+        stack_shape = self.stack.shape
+        vals_2d = vals_1d.reshape(stack_shape[1:3])
+        
+        if plot: 
+            mf.plotMI(vals_2d)
+        
+        if save:
+            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+                      self.cfg.OutputFolder, fn)
+
+    def MI_linearError(self, plot=True, save=True, fn='linerror.tif'):
+        
+        # check if self.stack_metrics exists 
+        try:
+            type(self.stack_results)
+        except AttributeError:
+            raise RuntimeError('stack results not calculated yet!')
+            
+        vals_1d = mf.MI_linearError(self.stack_results)
+        stack_shape = self.stack.shape
+        vals_2d = vals_1d.reshape(stack_shape[1:3])
+        
+        if plot: 
+            mf.plotMI(vals_2d)
+        
+        if save:
+            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+                      self.cfg.OutputFolder, fn)
+
+    def MI_noise(self, plot=True, save=True, fn='noise.tif'):
+        
+        # check if self.stack_metrics exists 
+        try:
+            type(self.stack_results)
+        except AttributeError:
+            raise RuntimeError('stack results not calculated yet!')
+            
+        vals_1d = mf.MI_noise(self.stack_results)
+        stack_shape = self.stack.shape
+        vals_2d = vals_1d.reshape(stack_shape[1:3])
+        
+        if plot: 
+            mf.plotMI(vals_2d)
+        
+        if save:
+            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+                      self.cfg.OutputFolder, fn)
+
+    def MI_bailcut(self, plot=True, save=True, fn='bailcut.tif'):
+        
+        # check if self.stack_metrics exists 
+        try:
+            type(self.stack_results)
+        except AttributeError:
+            raise RuntimeError('stack results not calculated yet!')
+            
+        vals_1d = mf.MI_bailcut(self.stack_results)
+        stack_shape = self.stack.shape
+        vals_2d = vals_1d.reshape(stack_shape[1:3])
+        
+        if plot: 
+            mf.plotMI(vals_2d)
+        
+        if save:
+            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+                      self.cfg.OutputFolder, fn)     
+
+    def MI_PostdistSlope(self, plot=True, save=True, fn='postdistslope.tif'):
+        
+        # check if self.stack_metrics exists 
+        try:
+            type(self.stack_metrics)
+        except AttributeError:
+            raise RuntimeError('stack metrics not calculated yet!')
+            
+        vals_1d = mf.MI_postDistSlope(self.stack_metrics)
+        stack_shape = self.stack.shape
+        vals_2d = vals_1d.reshape(stack_shape[1:3])
+        
+        if plot: 
+            mf.plotMI(vals_2d)
+        
+        if save:
+            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+                      self.cfg.OutputFolder, fn)
+     
+    def MI_PostdistMag(self, plot=True, save=True, fn='postdistmag.tif'):
+        
+        # check if self.stack_metrics exists 
+        try:
+            type(self.stack_metrics)
+        except AttributeError:
+            raise RuntimeError('stack metrics not calculated yet!')
+            
+        vals_1d = mf.MI_postDistMag(self.stack_metrics)
+        stack_shape = self.stack.shape
+        vals_2d = vals_1d.reshape(stack_shape[1:3])
+        
+        if plot: 
+            mf.plotMI(vals_2d)
+        
+        if save:
+            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+                      self.cfg.OutputFolder, fn)
+            
+    def MI_head(self, plot=True, save=True, fn='head.tif'):
+        
+        # check if self.stack_metrics exists 
+        try:
+            type(self.stack_results)
+        except AttributeError:
+            raise RuntimeError('stack results not calculated yet!')
+            
+        vals_1d = mf.MI_head(self.stack_results)
+        stack_shape = self.stack.shape
+        vals_2d = vals_1d.reshape(stack_shape[1:3])
+        
+        if plot: 
+            mf.plotMI(vals_2d)
+        
+        if save:
+            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+                      self.cfg.OutputFolder, fn)    
+
+    def MI_tail(self, plot=True, save=True, fn='tail.tif'):
+        
+        # check if self.stack_metrics exists 
+        try:
+            type(self.stack_results)
+        except AttributeError:
+            raise RuntimeError('stack results not calculated yet!')
+            
+        vals_1d = mf.MI_tail(self.stack_results)
+        stack_shape = self.stack.shape
+        vals_2d = vals_1d.reshape(stack_shape[1:3])
+        
+        if plot: 
+            mf.plotMI(vals_2d)
+        
+        if save:
+            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+                      self.cfg.OutputFolder, fn)                
+            
+    def MI_valueChange(self, start_date=-9999, end_date=9999, option='diff', 
+                       plot=True, save=True, fn='valuechange.tif'):
+        
+        # check if self.stack_metrics exists 
+        try:
+            type(self.stack_metrics)
+        except AttributeError:
+            raise RuntimeError('stack metrics not calculated yet!')
+            
+        vals_1d = mf.MI_valueChange(self.stack_metrics, start_date = start_date, end_date = end_date, option=option)
+        stack_shape = self.stack.shape
+        vals_2d = vals_1d.reshape(stack_shape[1:3])
+        
+        if plot: 
+            mf.plotMI(vals_2d)
+        
+        if save:
+            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+                      self.cfg.OutputFolder, fn)                
+     
+    def MI_recovery(self, time_passed, option='diff', plot=True, save=True, fn='recovery.tif'):
+
+        # check if self.stack_metrics exists 
+        try:
+            type(self.stack_metrics)
+        except AttributeError:
+            raise RuntimeError('stack metrics not calculated yet!')
+            
+        vals_1d = mf.MI_recovery(self.stack_metrics,time_passed, option=option)
+        stack_shape = self.stack.shape
+        vals_2d = vals_1d.reshape(stack_shape[1:3])
+        
+        if plot: 
+            mf.plotMI(vals_2d)
+        
+        if save:
+            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+                      self.cfg.OutputFolder, fn)               
+  
+    def MI_recoveryCmp(self, time_passed, plot=True, save=True, fn='recovery.tif'):
+
+        # check if self.stack_metrics exists 
+        try:
+            type(self.stack_metrics)
+        except AttributeError:
+            raise RuntimeError('stack metrics not calculated yet!')
+            
+        vals_1d = mf.MI_recoveryCmp(self.stack_metrics,time_passed)
+        stack_shape = self.stack.shape
+        vals_2d = vals_1d.reshape(stack_shape[1:3])
+        
+        if plot: 
+            mf.plotMI(vals_2d)
+        
+        if save:
+            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+                      self.cfg.OutputFolder, fn)        
+            
 if __name__ == '__main__':
     nita = nitaObj(ini)
     
@@ -524,10 +753,20 @@ if __name__ == '__main__':
     nita.runStack(parallel=False)
     nita.computeStackMetrics(parallel=False)
     
-    results_dic = nita.runPixel([8, 5], use_compute_mask=False, **{'value_limits': [-0.5, 1], 'min_complex': 2})
-    metrics_dic = nita.computeMetrics(results_dic)
+    #results_dic = nita.runPixel([8, 5], use_compute_mask=False, **{'value_limits': [-0.5, 1], 'min_complex': 2})
+    #metrics_dic = nita.computeMetrics(results_dic)
     
-    nita.MI_complexity(plot=True, save=True, fn='complexity.tiff')
-    nita.MI_distDate(option='middle', plot=True, save=True, fn='distdate.tiff')
-    nita.MI_distDuration(plot=True, save=True, fn='distduration.tiff')
+    #nita.MI_complexity(plot=True, save=True, fn='complexity.tiff')
+    #nita.MI_distDate(option='middle', plot=True, save=True, fn='distdate.tiff')
+    #nita.MI_distDuration(plot=True, save=True, fn='distduration.tiff')
+    #nita.MI_distMag(plot=True, save=True, fn='distMag.tif')
+    #nita.MI_distSlope(plot=True, save=True, fn='distSlope.tif')
+    #nita.MI_linearError(plot=True, save=True, fn='linerror.tif')
+    #nita.MI_noise(plot=True, save=True, fn='noise.tif')
+    #nita.MI_bailcut(plot=True, save=True, fn='bailcut.tif')
+    #nita.MI_PostdistSlope(plot=True, save=True, fn='postdistslope.tif')
+    #nita.MI_PostdistMag(plot=True, save=True, fn='postdistmag.tif')
+    #nita.MI_valueChange(start_date=2002000, end_date=2016900, option='diff', plot=True, save=True, fn='valuechange.tif')
+    #nita.MI_recovery(1, option='diff', plot=True, save=True, fn='recovery.tif')
+    #nita.MI_recoveryCmp(1, plot=True, save=True, fn='recoverycmp.tif')
     #nita.stopLog()

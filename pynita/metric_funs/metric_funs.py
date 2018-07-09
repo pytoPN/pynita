@@ -142,22 +142,6 @@ def computeMetrics(results_dic, vi_change_thresh, run_thresh, time_step):
     return metrics_dic
 
 #%%
-#def stretchMI(MI_1d):
-
-#%%
-def plotMI(MI_2d): 
-    fig, ax = plt.subplots()  
-    mappable = ax.matshow(MI_2d)
-    fig.colorbar(mappable)
-
-
-#%%          
-def MI_complexity(results_dics):
-    values_1d = np.array([dic['complexity'] for dic in results_dics])
-    
-    return(values_1d)
-
-#%%
 def calDistDate(metrics_dic, option='middle'):
     dist_date_before = metrics_dic['dist_date_before']
     dist_date_nadir = metrics_dic['dist_date_nadir']
@@ -172,6 +156,65 @@ def calDistDate(metrics_dic, option='middle'):
         raise RuntimeError('ERROR: invalid option!')
     
     return dist_date
+
+#%%
+def dateValue(metrics_dic, value_date):
+    
+    interp_pts = metrics_dic['interp_pts']
+    start_date = interp_pts[0, 0]
+    end_date = interp_pts[-1, 0]
+    
+    if value_date == -9999:
+        real_date = start_date
+        real_value = interp_pts[:, 1][np.argmin(abs(interp_pts[:, 0] - real_date))] # only first ocurrance will be returned 
+    elif value_date == 9999:
+        real_date = end_date
+        real_value = interp_pts[:, 1][np.argmin(abs(interp_pts[:, 0] - real_date))] # only first ocurrance will be returned 
+    elif (value_date>=start_date) & (value_date<=end_date):
+        real_date = value_date
+        real_value = interp_pts[:, 1][np.argmin(abs(interp_pts[:, 0] - real_date))] # only first ocurrance will be returned 
+    else:
+        if not np.isnan(value_date):
+            print('WARNNING: date not in time series, nan returned as value for given date')
+            print(str(start_date) + ' --> ' + str(value_date) + ' --> ' + str(end_date))
+        real_date = value_date 
+        real_value = np.nan
+        
+    return real_date, real_value 
+    
+#%%
+def valueChange(metrics_dic, start_date=-9999, end_date=9999, option='diff'):
+    start_date, start_value = dateValue(metrics_dic, start_date)
+    end_date, end_value = dateValue(metrics_dic, end_date)
+    
+    if start_date > end_date:
+        print(str(start_date) + ' ---> ' + str(end_date))
+        raise RuntimeError('ERROR: wrong start_date/end_date')
+    
+    if option == 'diff':
+        out_val = end_value - start_value 
+    elif option == 'change_percent':
+        out_val = (end_value - start_value) / start_value * 100
+    else: 
+        raise RuntimeError('ERROR: invalid option!')
+    
+    return out_val 
+    
+#%%
+#def stretchMI(MI_1d):
+
+#%%
+def plotMI(MI_2d): 
+    fig, ax = plt.subplots()  
+    mappable = ax.matshow(MI_2d)
+    fig.colorbar(mappable)
+
+
+#%%          
+def MI_complexity(results_dics):
+    values_1d = np.array([dic['complexity'] for dic in results_dics])
+    
+    return(values_1d)
     
 #%%
 def MI_distDate(metrics_dics, option='middle'):
@@ -185,4 +228,90 @@ def MI_distDuration(metrics_dics): # in days
     vals_1d = np.array([np.floor(duration/1000)*365+np.mod(duration, 1000)/1000*365 for duration in dist_durations])
     
     return vals_1d
+
+#%%
+def MI_distMag(metrics_dics):
+    vals_1d = np.array([dic['dist_mag'] for dic in metrics_dics])
     
+    return vals_1d
+
+#%%
+def MI_distSlope(metrics_dics):
+    vals_1d = np.array([dic['dist_slope'] for dic in metrics_dics])
+    
+    return vals_1d
+
+#%%
+def MI_linearError(results_dics):
+    vals_1d = np.array([dic['mae_linear'] for dic in results_dics])
+    
+    return vals_1d
+
+#%%
+def MI_noise(results_dics):
+    vals_1d = np.array([dic['noise'] for dic in results_dics])
+    
+    return vals_1d
+
+#%%
+def MI_bailcut(results_dics):
+    vals_1d = np.array([(dic['mae_linear']/dic['noise']) for dic in results_dics])
+    
+    return vals_1d
+
+#%%
+def MI_postDistSlope(metrics_dics):
+    vals_1d = np.array([dic['post_dist_slope'] for dic in metrics_dics])
+    
+    return vals_1d
+
+#%%
+def MI_postDistMag(metrics_dics):
+    vals_1d = np.array([dic['post_dist_mag'] for dic in metrics_dics])
+    
+    return vals_1d
+
+#%%
+def MI_head(results_dics):
+    vals_1d = np.array([dic['final_coeffs'][0] for dic in results_dics])
+    
+    return vals_1d
+
+#%%
+def MI_tail(results_dics):
+    vals_1d = np.array([dic['final_coeffs'][-1] for dic in results_dics])
+    
+    return vals_1d
+
+#%%
+def MI_valueChange(metrics_dics, start_date=-9999, end_date=9999, option='diff'):
+    
+    vals_1d = np.array([valueChange(metrics_dic, start_date=start_date, end_date=end_date, option=option) for metrics_dic in metrics_dics])
+    
+    return vals_1d
+
+#%%
+def MI_recovery(metrics_dics, time_passed, option='diff'):
+    
+    vals_1d = []
+    for metrics_dic in metrics_dics: 
+        start_date = metrics_dic['dist_date_nadir']
+        end_date = start_date + time_passed*1000
+        val = valueChange(metrics_dic, start_date=start_date, end_date=end_date, option=option)
+        vals_1d.append(val)
+    vals_1d = np.array(vals_1d)
+    return vals_1d
+
+#%%
+def MI_recoveryCmp(metrics_dics, time_passed):
+    
+    vals_1d = []
+    for metrics_dic in metrics_dics: 
+        dist_coeff_before = metrics_dic['dist_coeff_before']
+        start_date = metrics_dic['dist_date_nadir']
+        end_date = start_date + time_passed*1000
+        junk_output, end_date_val = dateValue(metrics_dic, end_date)
+        val = end_date_val / dist_coeff_before
+        vals_1d.append(val)
+    vals_1d = np.array(vals_1d)
+    return vals_1d
