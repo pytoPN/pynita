@@ -2,7 +2,7 @@ from osgeo import gdal
 import os
 
 #%%
-def SaveIM(MI_2d, prj, geotransform, path, fn):
+def saveMI(MI_2d, prj, geotransform, path, fn):
     
     full_fn = os.path.join(path, fn)
     
