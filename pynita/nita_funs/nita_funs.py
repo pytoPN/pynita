@@ -123,10 +123,10 @@ def findCandidate(dist, filt_dist, pct,
     
     dist = dist.min(axis=1)
     
-    #mov_mean = pd.Series(list(dist)).rolling(window=filt_dist, closed='both').mean()    
-    
-    mov_mean = pd.rolling_mean(dist, filt_dist, min_periods=1)
-    mov_std = pd.rolling_std(dist, filt_dist, min_periods=1)
+    mov_mean = np.array(pd.Series(dist).rolling(window=filt_dist).mean())
+    mov_std = np.array(pd.Series(dist).rolling(window=filt_dist).std())
+    if np.isnan(mov_std).all():
+        mov_std = np.ones(mov_std.shape)
     
     if filter_opt == 'movcv':
         search_series = (mov_mean / mov_std)
