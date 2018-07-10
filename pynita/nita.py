@@ -71,7 +71,7 @@ class nitaObj:
         
         self.compute_mask = user_mask
     
-    def runPts(self, OBJECTIDs, compute_mask=True, 
+    def runPts(self, OBJECTIDs, 
                plot=True, max_plot=25, 
                showdata='fit', colorbar=True, plot_title=True):
         
@@ -98,7 +98,7 @@ class nitaObj:
         pct = self.cfg.pct
         max_complex = self.cfg.max_complex
         min_complex = self.cfg.min_complex
-        compute_mask = compute_mask
+        compute_mask = True
         filter_opt = self.cfg.filter_opt
         
         if OBJECTIDs == [9999]:
@@ -141,8 +141,7 @@ class nitaObj:
                 nf.viewNITA(px, date_vec, doy_vec, results_dic, showdata=showdata, colorbar=colorbar, title = title, fig=fig, ax=ax.flatten()[i])               
 
         if len(OBJECTIDs) == 1:
-            return results_dic
-        return  
+            return results_dic  
 
     def runStack(self, parallel=True, workers=2):
  
@@ -466,7 +465,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)
     
     def MI_distDate(self, option='middle', plot=True, save=True, fn='distdate.tif'):
@@ -485,7 +484,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)               
      
     def MI_distDuration(self, plot=True, save=True, fn='distduration.tif'):
@@ -504,7 +503,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)           
      
     def MI_distMag(self, plot=True, save=True, fn='distMag.tif'):
@@ -523,7 +522,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)
     
     def MI_distSlope(self, plot=True, save=True, fn='distSlope.tif'):
@@ -542,7 +541,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)
 
     def MI_linearError(self, plot=True, save=True, fn='linerror.tif'):
@@ -561,7 +560,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)
 
     def MI_noise(self, plot=True, save=True, fn='noise.tif'):
@@ -580,7 +579,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)
 
     def MI_bailcut(self, plot=True, save=True, fn='bailcut.tif'):
@@ -599,7 +598,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)     
 
     def MI_PostdistSlope(self, plot=True, save=True, fn='postdistslope.tif'):
@@ -618,7 +617,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)
      
     def MI_PostdistMag(self, plot=True, save=True, fn='postdistmag.tif'):
@@ -637,7 +636,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)
             
     def MI_head(self, plot=True, save=True, fn='head.tif'):
@@ -656,7 +655,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)    
 
     def MI_tail(self, plot=True, save=True, fn='tail.tif'):
@@ -675,7 +674,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)                
             
     def MI_valueChange(self, start_date=-9999, end_date=9999, option='diff', 
@@ -695,7 +694,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)                
      
     def MI_recovery(self, time_passed, option='diff', plot=True, save=True, fn='recovery.tif'):
@@ -714,7 +713,7 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)               
   
     def MI_recoveryCmp(self, time_passed, plot=True, save=True, fn='recovery.tif'):
@@ -733,8 +732,182 @@ class nitaObj:
             mf.plotMI(vals_2d)
         
         if save:
-            dw.SaveIM(vals_2d, self.stack_prj, self.stack_geotransform,
+            dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
                       self.cfg.OutputFolder, fn)        
+
+    def setOpmParams(self, **param_dic):
+         
+        default_param_dic = {'bail_thresh': np.arange(1.3, 2.3, 0.2),
+                             'noise_thresh': [1],
+                             'penalty': [0.5, 1, 2, 3, 5],
+                             'filt_dist': [1, 3, 5, 7],
+                             'pct': [50, 70, 90],
+                             'max_complex': [5, 7, 10, 15],
+                             'min_complex':[1],
+                             'filter_opt': ['movcv'],
+                             'value_limits': [self.cfg.value_limits],
+                             'doy_limits': [self.cfg.doy_limits],
+                             'date_limits': [self.cfg.date_limits]}
+        
+        keys = param_dic.keys() 
+        if param_dic is not None:                   
+            wrong_names = [key for key in keys if not key in default_param_dic.keys()]
+            
+            if len(wrong_names) == 0:
+                for key, value in param_dic.items():
+                    default_param_dic[key] = value
+            else:
+                raise RuntimeError('ERROR: Wrong parameter name!')
+        
+        # yes I know this is stupid
+        param_combos = []
+        for bail_thresh in default_param_dic['bail_thresh']:
+            for date_limits in default_param_dic['date_limits']:
+                for doy_limits in default_param_dic['doy_limits']:
+                    for filt_dist in default_param_dic['filt_dist']:
+                        for filter_opt in default_param_dic['filter_opt']:
+                            for max_complex in default_param_dic['max_complex']:
+                                for min_complex in default_param_dic['min_complex']:
+                                    for noise_thresh in default_param_dic['noise_thresh']:
+                                        for pct in default_param_dic['pct']:
+                                            for penalty in default_param_dic['penalty']:
+                                                for value_limits in default_param_dic['value_limits']:
+                                                    param_dic_run = {'bail_thresh': bail_thresh,
+                                                                     'date_limits': date_limits,
+                                                                     'doy_limits': doy_limits,
+                                                                     'filt_dist': filt_dist,
+                                                                     'filter_opt': filter_opt,
+                                                                     'max_complex': max_complex,
+                                                                     'min_complex': min_complex,
+                                                                     'noise_thresh': noise_thresh,
+                                                                     'pct': pct, 
+                                                                     'penalty': penalty,
+                                                                     'value_limits': value_limits}
+                                                    param_combos.append(param_dic_run)
+            
+        self.opm_params = default_param_dic
+        self.opm_paramcombos = param_combos 
+         
+    def drawPts(self, OBJECTIDs, plot_title=True):
+        
+        # check to see if pts are loaded 
+        try:
+            type(self.pts)
+        except AttributeError:
+            raise RuntimeError('ERROR: pts not loaded yet')
+    
+        user_vi = self.cfg.user_vi
+        
+        if OBJECTIDs == [9999]:
+            OBJECTIDs = list(set(self.pts['OBJECTID']))
+        
+        OBJECTIDs = OBJECTIDs[0:25]
+        
+        handdraw_trajs = []
+        for OBJECTID in OBJECTIDs:
+            
+            fig, ax = plt.subplots()
+                    
+            plot_y = self.pts.loc[self.pts['OBJECTID'] == OBJECTID][user_vi].values
+            plot_x = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['date_dist'].values
+            plot_doy = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['doy'].values
+
+            if plot_title:
+                info_line = self.ref_pts.loc[self.ref_pts['OBJECTID'] == OBJECTID]
+                title = ''.join([str(item)+' ' for item in list(info_line.values.flatten())])
+            else:
+                title = ''
+            
+            mappable = ax.scatter(plot_x, plot_y, c=plot_doy)
+            ax.set_xlim([plot_x.min(), plot_x.max()])
+            ax.set_ylim([plot_y.min(), plot_y.max()])
+            ax.set_title(title)
+            fig.colorbar(mappable)
+            ginput_res = plt.ginput(-1)
+            handdraw_traj = {'OBJECTID': OBJECTID,
+                             'traj': ginput_res}
+            handdraw_trajs.append(handdraw_traj)
+        
+        self.handdraw_trajs = handdraw_trajs
+        
+        plt.close('all')
+    
+    def paramOpt(self):
+
+        # check to see if opm_paramcombos 
+        try:
+            type(self.opm_paramcombos)
+        except AttributeError:
+            raise RuntimeError('ERROR: opm param combo not set, use setOpmParams()') 
+
+        # check 
+        try:
+            type(self.handdraw_trajs)
+        except AttributeError:
+            raise RuntimeError('ERROR: handdraw_trajs not set, use drawPts()')
+        
+        OBJECTIDs = [dic['OBJECTID'] for dic in self.handdraw_trajs]
+        user_vi = self.cfg.user_vi
+        compute_mask=True
+        
+        paramcombo_rmse_mean = []
+        paramcombo_rmse_median = []
+        paramcombo_pct95err_mean = []
+        for param_combo in self.opm_paramcombos:
+            OBJETID_rmse = []
+            OBJECTID_pct95_err = []
+            for OBJECTID in OBJECTIDs:
+                
+                handdraw_traj = [dic['traj'] for dic in self.handdraw_trajs if dic['OBJECTID'] == OBJECTID][0]
+                
+                px = self.pts.loc[self.pts['OBJECTID'] == OBJECTID][user_vi].values
+                date_vec = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['date_dist'].values
+                doy_vec = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['doy'].values
+            
+                if len(px) == 0:
+                    raise RuntimeError('in-valid one or more OBJECTID(s)') 
+            
+                results_dic = nf.nita_px(px, date_vec, doy_vec, 
+                                         param_combo['value_limits'], param_combo['doy_limits'], param_combo['date_limits'],
+                                         param_combo['bail_thresh'], param_combo['noise_thresh'],
+                                         param_combo['penalty'], param_combo['filt_dist'], param_combo['pct'], param_combo['max_complex'], param_combo['min_complex'],
+                                         compute_mask, param_combo['filter_opt'])
+                
+                nita_knots = results_dic['final_knots']
+                nita_coeffs = results_dic['final_coeffs']
+                
+                draw_knots = [tp[0] for tp in handdraw_traj]
+                draw_coeffs = [tp[1] for tp in handdraw_traj]
+                
+                common_start = max([nita_knots[0], draw_knots[0]])
+                common_end = min([nita_knots[-1], draw_knots[-1]])
+                
+                nita_interp = np.interp(np.arange(common_start, common_end, 200), nita_knots, nita_coeffs)
+                draw_interp = np.interp(np.arange(common_start, common_end, 200), draw_knots, draw_coeffs)
+                
+                sq_error = (draw_interp - nita_interp)**2
+                rmse = np.sqrt(sq_error.mean())
+                pct95_err = np.sqrt(np.percentile(sq_error, 95, interpolation='midpoint'))
+                
+                OBJETID_rmse.append(rmse)
+                OBJECTID_pct95_err.append(pct95_err)
+            
+            paramcombo_rmse_mean.append(np.mean(OBJETID_rmse))
+            paramcombo_rmse_median.append(np.median(OBJETID_rmse))
+            paramcombo_pct95err_mean.append(np.mean(OBJETID_rmse))
+            
+        paramcombo_rmse_mean = np.array(paramcombo_rmse_mean)
+        paramcombo_rmse_median = np.array(paramcombo_rmse_median)
+        paramcombo_pct95err_mean = np.array(paramcombo_pct95err_mean)
+            
+        # save as att in case
+        self.paramcombo_rmse_mean = paramcombo_rmse_mean
+        self.paramcombo_rmse_median = paramcombo_rmse_median
+        self.paramcombo_pct95err_mean = paramcombo_pct95err_mean
+
+        best_paramcombo = self.opm_paramcombos[paramcombo_pct95err_mean.argmin()]
+        self.the_paramcombo = best_paramcombo
+        print(self.the_paramcombo)
             
 if __name__ == '__main__':
     nita = nitaObj(ini)
@@ -742,16 +915,16 @@ if __name__ == '__main__':
     nita.startLog()
     
     # tests with points 
-    #nita.loadPts(info_column='Name')
-    #nita.runPts([9999], compute_mask=True, plot=True, showdata='fit', colorbar=False, plot_title=True)
-    #results_dic = nita.runPts([1], compute_mask=True, plot=True, showdata='fit', colorbar=True, plot_title=True)    
+    nita.loadPts(info_column='Name')
+    #nita.runPts([9999], plot=True, showdata='fit', colorbar=False, plot_title=True)
+    #results_dic = nita.runPts([4], plot=True, showdata='fit', colorbar=True, plot_title=True)    
     
     # tests with stack 
-    nita.loadStack()
+    #nita.loadStack()
 
     #nita.runStack(parallel=True, workers=2)
-    nita.runStack(parallel=False)
-    nita.computeStackMetrics(parallel=False)
+    #nita.runStack(parallel=False)
+    #nita.computeStackMetrics(parallel=False)
     
     #results_dic = nita.runPixel([8, 5], use_compute_mask=False, **{'value_limits': [-0.5, 1], 'min_complex': 2})
     #metrics_dic = nita.computeMetrics(results_dic)
@@ -769,4 +942,11 @@ if __name__ == '__main__':
     #nita.MI_valueChange(start_date=2002000, end_date=2016900, option='diff', plot=True, save=True, fn='valuechange.tif')
     #nita.MI_recovery(1, option='diff', plot=True, save=True, fn='recovery.tif')
     #nita.MI_recoveryCmp(1, plot=True, save=True, fn='recoverycmp.tif')
+    
+    nita.drawPts([1, 2, 4], plot_title=True)
+    #nita.drawPts([9999], plot_title=True)
+    #nita.setOpmParams()
+    nita.setOpmParams(**{'bail_thresh': [1], 'noise_thresh': [1], 'penalty': [1, 2], 'filt_dist': [3, 5], 'pct': [70], 'max_complex': [10]})
+    nita.paramOpt()
+    
     #nita.stopLog()
