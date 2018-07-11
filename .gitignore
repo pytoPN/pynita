@@ -1,6 +1,7 @@
 
-*.pyc
+/example/output/*
 
+*.pyc
 
 /dist/
 
