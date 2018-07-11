@@ -1046,13 +1046,13 @@ class nitaObj:
             for k, v in self.the_paramcombo.items():
                 self.logger.info(k + ': ' + str(v))
                 
-   def addLog(self, message=''):
-       if self.log:
-           self.logger.info(message)
-       else:
-           raise RuntimeError('ERROR: log not started. Use startLog to start.')
+    def addLog(self, message=''):
+        if self.log:
+            self.logger.info(message)
+        else:
+            raise RuntimeError('ERROR: log not started. Use startLog to start.')
             
-if __name__ == '__main__asdas':
+if __name__ == '__main__':
     
     ini = '../example/user_configs.ini'
     nita = nitaObj(ini)
