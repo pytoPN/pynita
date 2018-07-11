@@ -13,12 +13,12 @@ from multiprocessing import Pool
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
-from data_reader.data_loader import dataLoader
-from data_reader.ini_reader import ConfigReader
-from data_writer import data_writer_funs as dw
-from nita_funs import nita_funs as nf
-from metric_funs import metric_funs as mf
-import utils.logging as lg
+from .data_reader.data_loader import dataLoader
+from .data_reader.ini_reader import ConfigReader
+from .data_writer import data_writer_funs as dw
+from .nita_funs import nita_funs as nf
+from .metric_funs import metric_funs as mf
+from .utils import logging as lg
 
 class nitaObj:
     
