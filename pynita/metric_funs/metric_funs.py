@@ -284,6 +284,13 @@ def MI_tail(results_dics):
     return vals_1d
 
 #%%
+def MI_dateValue(metrics_dics, value_date):
+    
+    vals_1d = np.array([dateValue(metrics_dic, value_date) for metrics_dic in metrics_dics])
+    
+    return vals_1d
+
+#%%
 def MI_valueChange(metrics_dics, start_date=-9999, end_date=9999, option='diff'):
     
     vals_1d = np.array([valueChange(metrics_dic, start_date=start_date, end_date=end_date, option=option) for metrics_dic in metrics_dics])
