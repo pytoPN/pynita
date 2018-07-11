@@ -45,11 +45,6 @@ class ConfigReader:
         except KeyError:
             mp = False
 
-        try:
-            npd = c['NITAParametersDebug']
-        except KeyError:
-            npd = False
-
         # module level settings
         # module VI
         if v is not False:
@@ -75,24 +70,6 @@ class ConfigReader:
             # TODO: add value check in here
         else: 
             raise RuntimeError('ERROR: [NITAParameters] module not found')
-    
-        # module NITAParametersDebug
-        if npd is not False:
-            self.value_limits_dg = [int(item) for item in npd['value_limits_dg']]
-            self.doy_limits_dg = [int(item) for item in npd['doy_limits_dg']]
-            self.doy_limits_dg = [self.doy_limits_dg[1:1+2] for i in range(0, len(self.doy_limits_dg), 2)]
-            self.date_limits_dg = [int(item) for item in npd['date_limits_dg']]
-            self.bail_thresh_dg =  float(npd['bail_thresh_dg'])
-            self.noise_thresh_dg = float(npd['noise_thresh_dg'])
-            self.penalty_dg = float(npd['penalty_dg'])
-            self.filt_dist_dg = int(npd['filt_dist_dg'])
-            self.pct_dg = float(npd['pct_dg'])
-            self.max_complex_dg = int(npd['max_complex_dg'])
-            self.min_complex_dg = int(npd['min_complex_dg'])
-            self.filter_opt_dg = npd['filter_opt_dg']
-            # TODO: add value check in here
-        else: 
-            raise RuntimeError('ERROR: [NITAParametersDebug] module not found')
         
         # module MetricsParameters
         if mp is not False:
