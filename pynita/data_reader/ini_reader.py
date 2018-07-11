@@ -44,6 +44,11 @@ class ConfigReader:
             mp = c['MetricsParameters']
         except KeyError:
             mp = False
+            
+        try:
+            po = c['ParameterOpmSet']
+        except KeyError:
+            po = False
 
         # module level settings
         # module VI
@@ -79,6 +84,21 @@ class ConfigReader:
             # TODO: add value check in here
         else:
             raise RuntimeError('ERROR: [MetricsParameters] module not found')
+
+        # module ParameterOpmSet
+        if po is not False:
+            self.param_opm_set = {'bail_thresh_set': [float(item) for item in po['bail_thresh_set']],
+                                  'noise_thresh_set': [float(item) for item in po['noise_thresh_set']],
+                                  'penalty_set': [float(item) for item in po['penalty_set']],
+                                  'filt_dist_set': [int(item) for item in po['filt_dist_set']],
+                                  'pct_set': [float(item) for item in po['pct_set']],
+                                  'max_complex_set': [int(item) for item in po['max_complex_set']],
+                                  'min_complex_set': [int(item) for item in po['min_complex_set']], 
+                                  'filter_opt_set': [item for item in po['filter_opt_set']]}
+
+            # TODO: add value check in here
+        else:
+            raise RuntimeError('ERROR: [ParameterOpmSet] module not found')
 
     def createDir(self, pth):
         """
