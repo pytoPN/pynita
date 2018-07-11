@@ -169,8 +169,6 @@ class nitaObj:
 
     def runStack(self, parallel=True, workers=2):
         
-        self.cfg = ConfigReader(ini)     
-        
         # ---
         # 1.
         # initialize log if wanted
@@ -1051,58 +1049,3 @@ class nitaObj:
             self.logger.info(message)
         else:
             raise RuntimeError('ERROR: log not started. Use startLog to start.')
-            
-if __name__ == '__main__':
-    
-    ini = '../example/user_configs.ini'
-    nita = nitaObj(ini)
-    
-    nita.startLog()
-    
-    # tests with points 
-    nita.loadPts(info_column='Name', full_table=False)
-    nita.runPts([9999], plot=True, max_plot=25, showdata='fit', colorbar=False, plot_title=True)
-    results_dic = nita.runPts([4], plot=True, showdata='fit', colorbar=True, plot_title=True)    
-    results_dic = nita.runPts([4], plot=True, showdata='fit', colorbar=True, plot_title=True, **{'min_complex': 5})
-    
-    # tests with stack 
-    nita.loadStack()
-    nita.setMask(np.ones((10,10)))
-    nita.runStack(parallel=True, workers=2)
-    nita.runStack(parallel=False)
-    results_dic = nita.getPixelResults([8, 5])
-    results_dic = nita.runPixel([8, 5], use_compute_mask=False, plot=True, showdata='fit', colorbar=True)
-    results_dic = nita.runPixel([8, 5], use_compute_mask=False, plot=True, showdata='fit', colorbar=True, **{'value_limits': [-0.5, 1], 'min_complex': 2})
-    
-    nita.computeStackMetrics(parallel=True, workers=2)
-    nita.computeStackMetrics(parallel=False)
-    
-    metrics_dic = nita.getPixelMetrics([8, 5])
-    metrics_dic = nita.computeMetrics(results_dic)
-    metrics_dic = nita.computeMetrics(results_dic, **{'run_thresh': 3000})
-
-    nita.MI_complexity(plot=True, save=True, fn='complexity.tiff')
-    nita.MI_distDate(option='middle', plot=True, save=True, fn='distdate.tiff')
-    nita.MI_distDuration(plot=True, save=True, fn='distduration.tiff')
-    nita.MI_distMag(plot=True, save=True, fn='distMag.tif')
-    nita.MI_distSlope(plot=True, save=True, fn='distSlope.tif')
-    nita.MI_linearError(plot=True, save=True, fn='linerror.tif')
-    nita.MI_noise(plot=True, save=True, fn='noise.tif')
-    nita.MI_bailcut(plot=True, save=True, fn='bailcut.tif')
-    nita.MI_postDistSlope(plot=True, save=True, fn='postdistslope.tif')
-    nita.MI_postDistMag(plot=True, save=True, fn='postdistmag.tif')
-    nita.MI_dateValue(plot=True, save=True, fn='datevalue.tif')
-    nita.MI_valueChange(start_date=-9999, end_date=9999, option='diff', plot=True, save=True, fn='valuechange1.tif')
-    nita.MI_valueChange(start_date=2002000, end_date=2016900, option='diff', plot=True, save=True, fn='valuechange2.tif')
-    nita.MI_recovery(1, option='diff', plot=True, save=True, fn='recovery.tif')
-    nita.MI_recoveryCmp(1, plot=True, save=True, fn='recoverycmp.tif')
-    
-    nita.drawPts([1, 2, 4], plot_title=True)
-    nita.drawPts([9999], plot_title=True)
-    nita.setOpmParams()
-    nita.setOpmParams(**{'bail_thresh': [1], 'noise_thresh': [1], 'penalty': [1, 2], 'filt_dist': [3, 5], 'pct': [70], 'max_complex': [10]})
-    nita.paramOpm()
-    
-    nita.addLog('log if wanted.')
-    
-    nita.stopLog()
