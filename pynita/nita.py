@@ -157,7 +157,7 @@ class nitaObj:
 
     def runStack(self, parallel=True, workers=2, use_opm_param=False):
         
-        if not use_opm_param:
+        if use_opm_param:
             try:
                 len(self.the_paramcombo)
             except:
@@ -258,7 +258,7 @@ class nitaObj:
                                           param_dic['value_limits'], param_dic['doy_limits'], param_dic['date_limits'],
                                           param_dic['bail_thresh'], param_dic['noise_thresh'],
                                           param_dic['penalty'], param_dic['filt_dist'], param_dic['pct'], param_dic['max_complex'], param_dic['min_complex'],
-                                          param_dic['compute_mask_run'], param_dic['filter_opt'])
+                                          compute_mask_run, param_dic['filter_opt'])
                  
                  results_dics_1d.append(results_dic)
             
