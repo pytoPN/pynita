@@ -88,19 +88,7 @@ class nitaObj:
         if type(self.pts).__name__ == 'NoneType':
             raise RuntimeError('pts not loaded yet')
         
-        default_param_dic = {}
-        default_param_dic['user_vi'] = self.cfg.user_vi
-        default_param_dic['value_limits'] = self.cfg.value_limits
-        default_param_dic['doy_limits'] = self.cfg.doy_limits
-        default_param_dic['date_limits'] = self.cfg.date_limits
-        default_param_dic['bail_thresh'] = self.cfg.bail_thresh
-        default_param_dic['noise_thresh'] = self.cfg.noise_thresh      
-        default_param_dic['penalty'] = self.cfg.penalty
-        default_param_dic['filt_dist'] = self.cfg.filt_dist
-        default_param_dic['pct'] = self.cfg.pct
-        default_param_dic['max_complex'] = self.cfg.max_complex
-        default_param_dic['min_complex'] = self.cfg.min_complex
-        default_param_dic['filter_opt'] = self.cfg.filter_opt
+        default_param_dic = self.cfg.param_nita
         compute_mask = True
         
         if param_dic is not None:       
@@ -167,7 +155,13 @@ class nitaObj:
         if len(OBJECTIDs) == 1:
             return results_dic  
 
-    def runStack(self, parallel=True, workers=2):
+    def runStack(self, parallel=True, workers=2, use_opm_param=False):
+        
+        if use_opm_param:
+            try:
+                len(self.the_paramcombo)
+            except:
+                raise RuntimeError('ERROR: paramOpm not run yet!')    
         
         # ---
         # 1.
@@ -227,24 +221,17 @@ class nitaObj:
         
         # ---
         # 5. 
-        # 5.a     
+        # 5.a   
+        if use_opm_param:
+            param_dic = self.cfg.the_paramcombo
+        else:
+            param_dic = self.cfg.param_nita    
+                       
         if parallel:
             
             # pack other arguments into a dic 
-            param_dic = {}
             param_dic['date_vec'] = self.stack_dates
             param_dic['doy_vec'] = self.stack_doy
-            param_dic['value_limits'] = self.cfg.value_limits
-            param_dic['doy_limits'] = self.cfg.doy_limits
-            param_dic['date_limits'] = self.cfg.date_limits
-            param_dic['bail_thresh'] = self.cfg.bail_thresh
-            param_dic['noise_thresh'] = self.cfg.noise_thresh       
-            param_dic['penalty'] = self.cfg.penalty    
-            param_dic['filt_dist'] = self.cfg.filt_dist
-            param_dic['pct'] = self.cfg.pct      
-            param_dic['max_complex'] = self.cfg.max_complex
-            param_dic['min_complex'] = self.cfg.min_complex
-            param_dic['filter_opt'] = self.cfg.filter_opt 
         
             iterable = [(stack_2d, compute_mask_1d, param_dic, i) for i in range(stack_2d_shape[1])]
         
@@ -257,18 +244,6 @@ class nitaObj:
         # 5.b
         if not parallel:
             
-             value_limits = self.cfg.value_limits
-             doy_limits = self.cfg.doy_limits
-             date_limits = self.cfg.date_limits
-             bail_thresh = self.cfg.bail_thresh
-             noise_thresh = self.cfg.noise_thresh      
-             penalty = self.cfg.penalty
-             filt_dist = self.cfg.filt_dist
-             pct = self.cfg.pct
-             max_complex = self.cfg.max_complex
-             min_complex = self.cfg.min_complex
-             filter_opt = self.cfg.filter_opt
-             
              date_vec = self.stack_dates   
              doy_vec = self.stack_doy
              
@@ -280,10 +255,10 @@ class nitaObj:
                  px = stack_2d[:, i]
                     
                  results_dic = nf.nita_px(px, date_vec, doy_vec, 
-                                          value_limits, doy_limits, date_limits,
-                                          bail_thresh, noise_thresh,
-                                          penalty, filt_dist, pct, max_complex, min_complex,
-                                          compute_mask_run, filter_opt)
+                                          param_dic['value_limits'], param_dic['doy_limits'], param_dic['date_limits'],
+                                          param_dic['bail_thresh'], param_dic['noise_thresh'],
+                                          param_dic['penalty'], param_dic['filt_dist'], param_dic['pct'], param_dic['max_complex'], param_dic['min_complex'],
+                                          compute_mask_run, param_dic['filter_opt'])
                  
                  results_dics_1d.append(results_dic)
             
@@ -341,18 +316,7 @@ class nitaObj:
             compute_mask = True         
 
         # get the nita parameters
-        param_dic = {}
-        param_dic['value_limits'] = self.cfg.value_limits
-        param_dic['doy_limits'] = self.cfg.doy_limits
-        param_dic['date_limits'] = self.cfg.date_limits
-        param_dic['bail_thresh'] = self.cfg.bail_thresh
-        param_dic['noise_thresh'] = self.cfg.noise_thresh       
-        param_dic['penalty'] = self.cfg.penalty    
-        param_dic['filt_dist'] = self.cfg.filt_dist
-        param_dic['pct'] = self.cfg.pct      
-        param_dic['max_complex'] = self.cfg.max_complex
-        param_dic['min_complex'] = self.cfg.min_complex
-        param_dic['filter_opt'] = self.cfg.filter_opt       
+        param_dic = self.cfg.param_nita     
         
         if len(nita_parameters) != 0:       
             keys = nita_parameters.keys()
@@ -409,13 +373,9 @@ class nitaObj:
             self.logger.info('computeStackMetrics start time: {}'.format(time.asctime(time.localtime(FUN_start_time))))
             self.logger.info('Parameters in ini file used')        
         
-        vi_change_thresh = self.cfg.vi_change_thresh
-        run_thresh = self.cfg.run_thresh
-        time_step = self.cfg.time_step
-        
         if parallel:
             
-            iterable = [(results_dic, vi_change_thresh, run_thresh, time_step) for results_dic in self.stack_results]
+            iterable = [(results_dic, self.cfg.param_metric['vi_change_thresh'], self.cfg.param_metric['run_thresh'], self.cfg.param_metric['time_step']) for results_dic in self.stack_results]
         
             pool = Pool(workers)
             metrics_dics_1d = pool.starmap(mf.computeMetrics, iterable)
@@ -425,7 +385,7 @@ class nitaObj:
         if not parallel: 
             metrics_dics_1d = []
             for results_dic in self.stack_results:
-                metrics_dic = mf.computeMetrics(results_dic, vi_change_thresh, run_thresh, time_step)
+                metrics_dic = mf.computeMetrics(results_dic, self.cfg.param_metric['vi_change_thresh'], self.cfg.param_metric['run_thresh'], self.cfg.param_metric['time_step'])
                 metrics_dics_1d.append(metrics_dic)
         
         self.stack_metrics = metrics_dics_1d
@@ -458,10 +418,7 @@ class nitaObj:
     
     def computeMetrics(self, results_dic, **metric_parameters):
         
-        param_dic = {}
-        param_dic['vi_change_thresh'] = self.cfg.vi_change_thresh
-        param_dic['run_thresh'] = self.cfg.run_thresh
-        param_dic['time_step'] = self.cfg.time_step
+        param_dic = self.cfg.param_metric
         
         if len(metric_parameters) != 0:       
             keys = metric_parameters.keys()
@@ -472,12 +429,8 @@ class nitaObj:
                     param_dic[key] = value
             else:
                 raise RuntimeError('ERROR: Wrong parameter name!')
-        
-        vi_change_thresh = param_dic['vi_change_thresh']
-        run_thresh = param_dic['run_thresh']
-        time_step = param_dic['time_step']
 
-        metrics_dic = mf.computeMetrics(results_dic, vi_change_thresh, run_thresh, time_step)
+        metrics_dic = mf.computeMetrics(results_dic, param_dic['vi_change_thresh'], param_dic['run_thresh'], param_dic['time_step'])
      
         if self.log:
             self.logger.info('computeMetrics start...')
@@ -844,17 +797,10 @@ class nitaObj:
             
     def setOpmParams(self, **param_dic):
          
-        default_param_dic = {'bail_thresh': np.arange(1.3, 2.3, 0.2),
-                             'noise_thresh': [1],
-                             'penalty': [0.5, 1, 2, 3, 5],
-                             'filt_dist': [1, 3, 5, 7],
-                             'pct': [50, 70, 90],
-                             'max_complex': [5, 7, 10, 15],
-                             'min_complex':[1],
-                             'filter_opt': ['movcv'],
-                             'value_limits': [self.cfg.value_limits],
-                             'doy_limits': [self.cfg.doy_limits],
-                             'date_limits': [self.cfg.date_limits]}
+        default_param_dic = self.param_opm_set 
+        default_param_dic['value_limits'] = [self.cfg.value_limits]
+        default_param_dic['doy_limits'] = [self.cfg.doy_limits]
+        default_param_dic['date_limits'] = [self.cfg.date_limits]
         
         keys = param_dic.keys() 
         if param_dic is not None:                   
@@ -1041,7 +987,7 @@ class nitaObj:
             for k, v in self.the_paramcombo.items():
                 self.logger.info(k + ': ' + str(v))
 				
-		for k, v in self.the_paramcombo.items():
+        for k, v in self.the_paramcombo.items():
             print(k + ': ' + str(v))
                 
     def addLog(self, message=''):
