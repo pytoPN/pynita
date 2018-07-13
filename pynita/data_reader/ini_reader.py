@@ -95,7 +95,7 @@ class ConfigReader:
                                   'pct_set': [float(item) for item in po['pct_set']],
                                   'max_complex_set': [int(item) for item in po['max_complex_set']],
                                   'min_complex_set': [int(item) for item in po['min_complex_set']], 
-                                  'filter_opt_set': [item for item in po['filter_opt_set']]}
+                                  'filter_opt_set': [po['filter_opt_set']]}
 
             # TODO: add value check in here
         else:
