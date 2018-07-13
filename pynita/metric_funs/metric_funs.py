@@ -286,7 +286,7 @@ def MI_tail(results_dics):
 #%%
 def MI_dateValue(metrics_dics, value_date):
     
-    vals_1d = np.array([dateValue(metrics_dic, value_date) for metrics_dic in metrics_dics])
+    vals_1d = np.array([dateValue(metrics_dic, value_date)[1] for metrics_dic in metrics_dics])
     
     return vals_1d
 
