@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 import math
-from scipy import stats  
+from scipy import stats, signal
 import matplotlib.pyplot as plt
 
 #%%
@@ -130,6 +130,10 @@ def findCandidate(dist, filt_dist, pct,
     
     if filter_opt == 'movcv':
         search_series = (mov_mean / mov_std)
+    if filter_opt == 'movmean':
+        search_series = mov_mean
+    if filter_opt == 'sgolay':
+        search_series = signal.savgol_filter(dist, filt_dist, 2)
         
     invalid_ss_idx = list(set(list(range(0,filt_dist)) + 
                               list(range(len(search_series) - filt_dist, len(search_series))) + 
