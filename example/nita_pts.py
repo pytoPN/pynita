@@ -1,8 +1,15 @@
 import numpy as np
 from pynita import *
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-config_file', type=str, help='Full path with file name to INI configuration file.')
+args = parser.parse_args()
+
 # assign the ini file 
-ini = 'user_configs.ini'
+if args.config_file is None:
+    ini = 'user_configs.ini'
+else:
+    ini = args.config_file
 
 # initialize the nita object
 nita = nitaObj(ini)
