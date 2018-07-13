@@ -471,4 +471,45 @@ def nita_stack_wrapper(stack_2d, compute_mask_1d, param_dic, i):
                           compute_mask, filter_opt)
 
     return results_dic
+
+#%%
+def paramcomboCmp(param_combo, OBJECTIDs, handdraw_trajs, pts, user_vi, compute_mask):
+    OBJETID_rmse = []
+    OBJECTID_pct95_err = []
+    for OBJECTID in OBJECTIDs:
+                
+        handdraw_traj = [dic['traj'] for dic in handdraw_trajs if dic['OBJECTID'] == OBJECTID][0]
+                
+        px = pts.loc[pts['OBJECTID'] == OBJECTID][user_vi].values
+        date_vec = pts.loc[pts['OBJECTID'] == OBJECTID]['date_dist'].values
+        doy_vec = pts.loc[pts['OBJECTID'] == OBJECTID]['doy'].values
+            
+        if len(px) == 0:
+            raise RuntimeError('in-valid one or more OBJECTID(s)') 
+            
+        results_dic = nita_px(px, date_vec, doy_vec, 
+                              param_combo['value_limits'], param_combo['doy_limits'], param_combo['date_limits'],
+                              param_combo['bail_thresh'], param_combo['noise_thresh'],
+                              param_combo['penalty'], param_combo['filt_dist'], param_combo['pct'], param_combo['max_complex'], param_combo['min_complex'],
+                              compute_mask, param_combo['filter_opt'])
+                
+        nita_knots = results_dic['final_knots']
+        nita_coeffs = results_dic['final_coeffs']
+                
+        draw_knots = [tp[0] for tp in handdraw_traj]
+        draw_coeffs = [tp[1] for tp in handdraw_traj]
+                
+        common_start = max([nita_knots[0], draw_knots[0]])
+        common_end = min([nita_knots[-1], draw_knots[-1]])
+                
+        nita_interp = np.interp(np.arange(common_start, common_end, 200), nita_knots, nita_coeffs)
+        draw_interp = np.interp(np.arange(common_start, common_end, 200), draw_knots, draw_coeffs)
+             
+        sq_error = (draw_interp - nita_interp)**2
+        rmse = np.sqrt(sq_error.mean())
+        pct95_err = np.sqrt(np.percentile(sq_error, 95, interpolation='midpoint'))
+                
+        OBJETID_rmse.append(rmse)
+        OBJECTID_pct95_err.append(pct95_err)
     
+    return np.mean(OBJETID_rmse), np.median(OBJETID_rmse), np.mean(OBJETID_rmse)
