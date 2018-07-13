@@ -161,24 +161,29 @@ def calDistDate(metrics_dic, option='middle'):
 def dateValue(metrics_dic, value_date):
     
     interp_pts = metrics_dic['interp_pts']
-    start_date = interp_pts[0, 0]
-    end_date = interp_pts[-1, 0]
     
-    if value_date == -9999:
-        real_date = start_date
-        real_value = interp_pts[:, 1][np.argmin(abs(interp_pts[:, 0] - real_date))] # only first ocurrance will be returned 
-    elif value_date == 9999:
-        real_date = end_date
-        real_value = interp_pts[:, 1][np.argmin(abs(interp_pts[:, 0] - real_date))] # only first ocurrance will be returned 
-    elif (value_date>=start_date) & (value_date<=end_date):
-        real_date = value_date
-        real_value = interp_pts[:, 1][np.argmin(abs(interp_pts[:, 0] - real_date))] # only first ocurrance will be returned 
-    else:
-        if not np.isnan(value_date):
-            print('WARNNING: date not in time series, nan returned as value for given date')
-            print(str(start_date) + ' --> ' + str(value_date) + ' --> ' + str(end_date))
-        real_date = value_date 
+    if np.isnan(interp_pts).any():
+        real_date = np.nan
         real_value = np.nan
+    else:
+        start_date = interp_pts[0, 0]
+        end_date = interp_pts[-1, 0]
+    
+        if value_date == -9999:
+            real_date = start_date
+            real_value = interp_pts[:, 1][np.argmin(abs(interp_pts[:, 0] - real_date))] # only first ocurrance will be returned 
+        elif value_date == 9999:
+            real_date = end_date
+            real_value = interp_pts[:, 1][np.argmin(abs(interp_pts[:, 0] - real_date))] # only first ocurrance will be returned 
+        elif (value_date>=start_date) & (value_date<=end_date):
+            real_date = value_date
+            real_value = interp_pts[:, 1][np.argmin(abs(interp_pts[:, 0] - real_date))] # only first ocurrance will be returned 
+        else:
+            if not np.isnan(value_date):
+                print('WARNNING: date not in time series, nan returned as value for given date')
+                print(str(start_date) + ' --> ' + str(value_date) + ' --> ' + str(end_date))
+            real_date = value_date 
+            real_value = np.nan
         
     return real_date, real_value 
     
