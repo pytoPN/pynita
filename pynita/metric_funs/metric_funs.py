@@ -201,7 +201,16 @@ def valueChange(metrics_dic, start_date=-9999, end_date=9999, option='diff'):
     return out_val 
     
 #%%
-#def stretchMI(MI_1d):
+def stretchMI(vals_1d, low_high=[2, 98]):
+    
+    low_per = np.percentile(vals_1d, low_high[0])
+    high_per = np.percentile(vals_1d, low_high[1])
+    
+    vals_1d_adj = vals_1d
+    vals_1d_adj = np.where(vals_1d_adj<low_per, low_per, vals_1d_adj)
+    vals_1d_adj = np.where(vals_1d_adj>high_per, high_per, vals_1d_adj)
+    
+    return vals_1d_adj
 
 #%%
 def plotMI(MI_2d): 

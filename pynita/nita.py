@@ -455,9 +455,10 @@ class nitaObj:
         vals_1d = mf.MI_complexity(self.stack_results)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -477,9 +478,10 @@ class nitaObj:
         vals_1d = mf.MI_distDate(self.stack_metrics, option=option)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -498,9 +500,10 @@ class nitaObj:
         vals_1d = mf.MI_distDuration(self.stack_metrics)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -520,9 +523,10 @@ class nitaObj:
         vals_1d = mf.MI_distMag(self.stack_metrics)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -542,9 +546,10 @@ class nitaObj:
         vals_1d = mf.MI_distSlope(self.stack_metrics)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -564,9 +569,10 @@ class nitaObj:
         vals_1d = mf.MI_linearError(self.stack_results)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -586,9 +592,10 @@ class nitaObj:
         vals_1d = mf.MI_noise(self.stack_results)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -608,9 +615,10 @@ class nitaObj:
         vals_1d = mf.MI_bailcut(self.stack_results)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -630,9 +638,10 @@ class nitaObj:
         vals_1d = mf.MI_postDistSlope(self.stack_metrics)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -652,9 +661,10 @@ class nitaObj:
         vals_1d = mf.MI_postDistMag(self.stack_metrics)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -674,9 +684,10 @@ class nitaObj:
         vals_1d = mf.MI_head(self.stack_results)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -696,9 +707,10 @@ class nitaObj:
         vals_1d = mf.MI_tail(self.stack_results)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -717,9 +729,10 @@ class nitaObj:
         vals_1d = mf.MI_dateValue(self.stack_metrics, value_date)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -740,9 +753,10 @@ class nitaObj:
         vals_1d = mf.MI_valueChange(self.stack_metrics, start_date = start_date, end_date = end_date, option=option)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -762,9 +776,10 @@ class nitaObj:
         vals_1d = mf.MI_recovery(self.stack_metrics,time_passed, option=option)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
@@ -784,9 +799,10 @@ class nitaObj:
         vals_1d = mf.MI_recoveryCmp(self.stack_metrics,time_passed)
         stack_shape = self.stack.shape
         vals_2d = vals_1d.reshape(stack_shape[1:3])
+        vals_2d_adj = mf.stretchMI(vals_2d)
         
         if plot: 
-            mf.plotMI(vals_2d)
+            mf.plotMI(vals_2d_adj)
         
         if save:
             dw.saveMI(vals_2d, self.stack_prj, self.stack_geotransform,
