@@ -419,7 +419,10 @@ def viewNITA(px, date_vec, doy_vec,
         ax.plot(knot_set, coeff_set, 'r-')
         ax.set_xlim([plot_x.min(), plot_x.max()])
         ax.set_ylim([np.nanmin(plot_y), np.nanmax(plot_y)])
-        ax.set_title(title)
+        ax.set_title(title) 
+        xticks_lables = ax.get_xticks().tolist()
+        xticks_lables = [str(xticks_label)[0:4] for xticks_label in xticks_lables]
+        ax.set_xticklabels(xticks_lables)
         if colorbar:
             fig.colorbar(mappable)
         print('bail_cut = {0} \nfit_count = {1}'.format(bail_cut, fit_count))
