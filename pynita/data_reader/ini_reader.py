@@ -61,7 +61,7 @@ class ConfigReader:
         if np is not False: 
             doy_limits = [int(item) for item in np['doy_limits']]
             doy_limits = [doy_limits[i:i+2] for i in range(0, len(doy_limits), 2)]
-            self.param_nita = {'value_limits': [int(item) for item in np['value_limits']],
+            self.param_nita = {'value_limits': [float(item) for item in np['value_limits']],
                                 'doy_limits': doy_limits,
                                 'date_limits': [int(item) for item in np['date_limits']], 
                                 'bail_thresh': float(np['bail_thresh']), 
