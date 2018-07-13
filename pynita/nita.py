@@ -89,6 +89,7 @@ class nitaObj:
             raise RuntimeError('pts not loaded yet')
         
         default_param_dic = self.cfg.param_nita
+        user_vi = self.cfg.user_vi
         compute_mask = True
         
         if param_dic is not None:       
@@ -118,7 +119,7 @@ class nitaObj:
             
             i = OBJECTIDs.index(OBJECTID)
                     
-            px = self.pts.loc[self.pts['OBJECTID'] == OBJECTID][default_param_dic['user_vi']].values
+            px = self.pts.loc[self.pts['OBJECTID'] == OBJECTID][user_vi].values
             date_vec = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['date_dist'].values
             doy_vec = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['doy'].values
             
