@@ -169,7 +169,6 @@ class nitaObj:
         # initialize log if wanted
         if self.log:
             self.logger.info('Project Name : {}'.format(self.cfg.ProjectName))
-            self.logger.info('Input Folder : {}'.format(self.cfg.InputFolder))
             self.logger.info('Output Folder: {}'.format(self.cfg.OutputFolder))
             self.logger.info('Point Data: {}'.format(self.cfg.ptsFn))
             self.logger.info('Stack Date Data: {}'.format(self.cfg.stackdateFn))
