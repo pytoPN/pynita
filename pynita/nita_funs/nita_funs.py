@@ -418,7 +418,7 @@ def viewNITA(px, date_vec, doy_vec,
         ax.plot(knot_set, coeff_set, 'ro', mfc='none')
         ax.plot(knot_set, coeff_set, 'r-')
         ax.set_xlim([plot_x.min(), plot_x.max()])
-        ax.set_ylim([plot_y.min(), plot_y.max()])
+        ax.set_ylim([np.nanmin(plot_y), np.nanmax(plot_y)])
         ax.set_title(title)
         if colorbar:
             fig.colorbar(mappable)
