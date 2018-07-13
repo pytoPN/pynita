@@ -15,10 +15,10 @@ def filterLimits(x, y, doy_vec, value_limits, date_limits, doy_limits):
         y = y
         doy_vec = doy_vec
     else:
-        if date_limits[0] == -9999 & date_limits[1] != -9999:
+        if (date_limits[0] == -9999) & (date_limits[1] != -9999):
             start_date = x[0]
             end_date = date_limits[1]
-        elif date_limits[0] != -9999 & date_limits[1] == 9999:
+        elif (date_limits[0] != -9999) & (date_limits[1] == 9999):
             start_date = date_limits[0]
             end_date = x[-1]
         else:
