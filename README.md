@@ -52,4 +52,3 @@ Full workflow must be developed using control file template in `./example`. Then
 $python control_file.py -config_file [fullpathofconfigfile]
 ```
 
-```
