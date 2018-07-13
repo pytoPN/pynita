@@ -22,7 +22,7 @@ def computeMetrics(results_dic, vi_change_thresh, run_thresh, time_step):
     #runs = results_dic['runs'];
     runs_in_days = results_dic['runs_days'];
     
-    if knots[0] != -999:
+    if type(knots) is not 'int':
     
         try:
             # ---
