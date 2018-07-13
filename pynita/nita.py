@@ -913,7 +913,7 @@ class nitaObj:
             self.logger.info('total {} OBJECTIDs drew: ' + str(OBJECTIDs).format(len(OBJECTIDs)))
             self.logger.info('drawPts end...')
             
-    def paramOpm(self):
+    def paramOpm(self, parallel=True, workers=2):
 
         # check to see if opm_paramcombos 
         try:
@@ -937,51 +937,64 @@ class nitaObj:
         user_vi = self.cfg.user_vi
         compute_mask=True
         
-        paramcombo_rmse_mean = []
-        paramcombo_rmse_median = []
-        paramcombo_pct95err_mean = []
-        for param_combo in self.opm_paramcombos:
-            OBJETID_rmse = []
-            OBJECTID_pct95_err = []
-            for OBJECTID in OBJECTIDs:
+        if not parallel: 
+        
+            paramcombo_rmse_mean = []
+            paramcombo_rmse_median = []
+            paramcombo_pct95err_mean = []
+            for param_combo in self.opm_paramcombos:
+                OBJETID_rmse = []
+                OBJECTID_pct95_err = []
+                for OBJECTID in OBJECTIDs:
+                    
+                    handdraw_traj = [dic['traj'] for dic in self.handdraw_trajs if dic['OBJECTID'] == OBJECTID][0]
+                    
+                    px = self.pts.loc[self.pts['OBJECTID'] == OBJECTID][user_vi].values
+                    date_vec = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['date_dist'].values
+                    doy_vec = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['doy'].values
                 
-                handdraw_traj = [dic['traj'] for dic in self.handdraw_trajs if dic['OBJECTID'] == OBJECTID][0]
+                    if len(px) == 0:
+                        raise RuntimeError('in-valid one or more OBJECTID(s)') 
                 
-                px = self.pts.loc[self.pts['OBJECTID'] == OBJECTID][user_vi].values
-                date_vec = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['date_dist'].values
-                doy_vec = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['doy'].values
+                    results_dic = nf.nita_px(px, date_vec, doy_vec, 
+                                             param_combo['value_limits'], param_combo['doy_limits'], param_combo['date_limits'],
+                                             param_combo['bail_thresh'], param_combo['noise_thresh'],
+                                             param_combo['penalty'], param_combo['filt_dist'], param_combo['pct'], param_combo['max_complex'], param_combo['min_complex'],
+                                             compute_mask, param_combo['filter_opt'])
+                    
+                    nita_knots = results_dic['final_knots']
+                    nita_coeffs = results_dic['final_coeffs']
+                    
+                    draw_knots = [tp[0] for tp in handdraw_traj]
+                    draw_coeffs = [tp[1] for tp in handdraw_traj]
+                    
+                    common_start = max([nita_knots[0], draw_knots[0]])
+                    common_end = min([nita_knots[-1], draw_knots[-1]])
+                    
+                    nita_interp = np.interp(np.arange(common_start, common_end, 200), nita_knots, nita_coeffs)
+                    draw_interp = np.interp(np.arange(common_start, common_end, 200), draw_knots, draw_coeffs)
+                    
+                    sq_error = (draw_interp - nita_interp)**2
+                    rmse = np.sqrt(sq_error.mean())
+                    pct95_err = np.sqrt(np.percentile(sq_error, 95, interpolation='midpoint'))
+                    
+                    OBJETID_rmse.append(rmse)
+                    OBJECTID_pct95_err.append(pct95_err)
+                
+                paramcombo_rmse_mean.append(np.mean(OBJETID_rmse))
+                paramcombo_rmse_median.append(np.median(OBJETID_rmse))
+                paramcombo_pct95err_mean.append(np.mean(OBJETID_rmse))
+                
+        if parallel:            
+            iterable = [(param_combo, OBJECTIDs, self.handdraw_trajs, self.pts, user_vi, compute_mask) for param_combo in self.opm_paramcombos]
+            pool = Pool(workers)
+            param_opm_res = pool.starmap(nf.paramcomboCmp, iterable)
+            pool.close()
+            pool.join()
             
-                if len(px) == 0:
-                    raise RuntimeError('in-valid one or more OBJECTID(s)') 
-            
-                results_dic = nf.nita_px(px, date_vec, doy_vec, 
-                                         param_combo['value_limits'], param_combo['doy_limits'], param_combo['date_limits'],
-                                         param_combo['bail_thresh'], param_combo['noise_thresh'],
-                                         param_combo['penalty'], param_combo['filt_dist'], param_combo['pct'], param_combo['max_complex'], param_combo['min_complex'],
-                                         compute_mask, param_combo['filter_opt'])
-                
-                nita_knots = results_dic['final_knots']
-                nita_coeffs = results_dic['final_coeffs']
-                
-                draw_knots = [tp[0] for tp in handdraw_traj]
-                draw_coeffs = [tp[1] for tp in handdraw_traj]
-                
-                common_start = max([nita_knots[0], draw_knots[0]])
-                common_end = min([nita_knots[-1], draw_knots[-1]])
-                
-                nita_interp = np.interp(np.arange(common_start, common_end, 200), nita_knots, nita_coeffs)
-                draw_interp = np.interp(np.arange(common_start, common_end, 200), draw_knots, draw_coeffs)
-                
-                sq_error = (draw_interp - nita_interp)**2
-                rmse = np.sqrt(sq_error.mean())
-                pct95_err = np.sqrt(np.percentile(sq_error, 95, interpolation='midpoint'))
-                
-                OBJETID_rmse.append(rmse)
-                OBJECTID_pct95_err.append(pct95_err)
-            
-            paramcombo_rmse_mean.append(np.mean(OBJETID_rmse))
-            paramcombo_rmse_median.append(np.median(OBJETID_rmse))
-            paramcombo_pct95err_mean.append(np.mean(OBJETID_rmse))
+            paramcombo_rmse_mean = [item[0] for item in param_opm_res]
+            paramcombo_rmse_median = [item[1] for item in param_opm_res]
+            paramcombo_pct95err_mean = [item[2] for item in param_opm_res] 
             
         paramcombo_rmse_mean = np.array(paramcombo_rmse_mean)
         paramcombo_rmse_median = np.array(paramcombo_rmse_median)
