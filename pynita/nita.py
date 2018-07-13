@@ -65,7 +65,7 @@ class nitaObj:
         self.stack_shape = '{0} rows {1} columns {2} layers'.format(self.stack.shape[1], self.stack.shape[2], self.stack.shape[0])
         
         if self.log:
-            self.logger.info('Points file ' + self.cfg.stackFn + ' loaded. {}s used.'.format(round(FUN_end_time - FUN_start_time, 4)))
+            self.logger.info('Stack file ' + self.cfg.stackFn + ' loaded. {}s used.'.format(round(FUN_end_time - FUN_start_time, 4)))
             
     def setMask(self, user_mask):    
         if type(user_mask).__name__ != 'ndarray':
