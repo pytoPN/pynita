@@ -22,7 +22,6 @@ class ConfigReader:
         # project dirs
         self.root = p['RootDir']
         self.ProjectName = p['ProjectName']
-        self.InputFolder = os.path.join(self.root, p['InputFolder'])
         self.ptsFn = p['ptsFn']
         self.stackdateFn = p['stackdateFn']
         self.stackFn = p['stackFn']

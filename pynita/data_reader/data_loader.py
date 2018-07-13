@@ -8,7 +8,6 @@ License:
 Copyright (c) 
 """
 
-import os
 import pandas as pd
 import numpy as np
 from osgeo import gdal
@@ -22,7 +21,6 @@ class dataLoader:
         Args:
             cfg (ConfigReader class): 
         """
-        self.InputFolder = cfg.InputFolder
         self.ptsFn = cfg.ptsFn
         self.stackFn = cfg.stackFn
         self.stackdateFn = cfg.stackdateFn
@@ -42,7 +40,7 @@ class dataLoader:
         
         col_names.append(self.user_vi)        
         
-        pts_path = os.path.join(self.InputFolder, self.ptsFn)
+        pts_path = self.ptsFn
         pts_tb_raw = pd.read_csv(pts_path)
      
         pts_tb = pts_tb_raw[col_names]
@@ -66,8 +64,8 @@ class dataLoader:
         return pts_tb
 
     def load_stack(self): 
-        stack_path = os.path.join(self.InputFolder, self.stackFn)
-        stackdate_path = os.path.join(self.InputFolder, self.stackdateFn)
+        stack_path = self.stackFn
+        stackdate_path = self.stackdateFn
         
         # deal with stackdate first
         stackdate_tb = pd.read_csv(stackdate_path)
