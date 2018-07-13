@@ -798,10 +798,10 @@ class nitaObj:
             
     def setOpmParams(self, **param_dic):
          
-        default_param_dic = self.param_opm_set 
-        default_param_dic['value_limits'] = [self.cfg.value_limits]
-        default_param_dic['doy_limits'] = [self.cfg.doy_limits]
-        default_param_dic['date_limits'] = [self.cfg.date_limits]
+        default_param_dic = self.cfg.param_opm_set 
+        default_param_dic['value_limits'] = [self.cfg.param_nita['value_limits']]
+        default_param_dic['doy_limits'] = [self.cfg.param_nita['doy_limits']]
+        default_param_dic['date_limits'] = [self.cfg.param_nita['date_limits']]
         
         keys = param_dic.keys() 
         if param_dic is not None:                   
@@ -815,16 +815,16 @@ class nitaObj:
         
         # yes I know this is stupid
         param_combos = []
-        for bail_thresh in default_param_dic['bail_thresh']:
+        for bail_thresh in default_param_dic['bail_thresh_set']:
             for date_limits in default_param_dic['date_limits']:
                 for doy_limits in default_param_dic['doy_limits']:
-                    for filt_dist in default_param_dic['filt_dist']:
-                        for filter_opt in default_param_dic['filter_opt']:
-                            for max_complex in default_param_dic['max_complex']:
-                                for min_complex in default_param_dic['min_complex']:
-                                    for noise_thresh in default_param_dic['noise_thresh']:
-                                        for pct in default_param_dic['pct']:
-                                            for penalty in default_param_dic['penalty']:
+                    for filt_dist in default_param_dic['filt_dist_set']:
+                        for filter_opt in default_param_dic['filter_opt_set']:
+                            for max_complex in default_param_dic['max_complex_set']:
+                                for min_complex in default_param_dic['min_complex_set']:
+                                    for noise_thresh in default_param_dic['noise_thresh_set']:
+                                        for pct in default_param_dic['pct_set']:
+                                            for penalty in default_param_dic['penalty_set']:
                                                 for value_limits in default_param_dic['value_limits']:
                                                     param_dic_run = {'bail_thresh': bail_thresh,
                                                                      'date_limits': date_limits,
@@ -885,7 +885,7 @@ class nitaObj:
             ax.set_ylim([plot_y.min(), plot_y.max()])
             ax.set_title(title)
             fig.colorbar(mappable)
-            ginput_res = plt.ginput(-1)
+            ginput_res = plt.ginput(n=-1, timeout=0)
             handdraw_traj = {'OBJECTID': OBJECTID,
                              'traj': ginput_res}
             handdraw_trajs.append(handdraw_traj)
