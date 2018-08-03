@@ -9,6 +9,7 @@ Copyright (c)
 #import sys
 import numpy as np
 import time  
+import copy
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -88,7 +89,7 @@ class nitaObj:
         if type(self.pts).__name__ == 'NoneType':
             raise RuntimeError('pts not loaded yet')
         
-        default_param_dic = self.cfg.param_nita
+        default_param_dic = copy.deepcopy(self.cfg.param_nita)
         user_vi = self.cfg.user_vi
         compute_mask = True
         
@@ -223,9 +224,9 @@ class nitaObj:
         # 5. 
         # 5.a   
         if use_opm_param:
-            param_dic = self.cfg.the_paramcombo
+            param_dic = copy.deepcopy(self.cfg.the_paramcombo)
         else:
-            param_dic = self.cfg.param_nita    
+            param_dic = copy.deepcopy(self.cfg.param_nita)    
                        
         if parallel:
             
@@ -316,7 +317,7 @@ class nitaObj:
             compute_mask = True         
 
         # get the nita parameters
-        param_dic = self.cfg.param_nita     
+        param_dic = copy.deepcopy(self.cfg.param_nita)     
         
         if len(nita_parameters) != 0:       
             keys = nita_parameters.keys()
@@ -418,7 +419,7 @@ class nitaObj:
     
     def computeMetrics(self, results_dic, **metric_parameters):
         
-        param_dic = self.cfg.param_metric
+        param_dic = copy.deepcopy(self.cfg.param_metric)
         
         if len(metric_parameters) != 0:       
             keys = metric_parameters.keys()
@@ -813,7 +814,7 @@ class nitaObj:
             
     def setOpmParams(self, **param_dic):
          
-        default_param_dic = self.cfg.param_opm_set 
+        default_param_dic = copy.deepcopy(self.cfg.param_opm_set)
         default_param_dic['value_limits'] = [self.cfg.param_nita['value_limits']]
         default_param_dic['doy_limits'] = [self.cfg.param_nita['doy_limits']]
         default_param_dic['date_limits'] = [self.cfg.param_nita['date_limits']]
