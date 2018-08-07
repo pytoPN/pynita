@@ -1,6 +1,7 @@
 #%%
 import numpy as np
 import pandas as pd
+import copy
 import math
 from scipy import stats, signal
 import matplotlib.pyplot as plt
@@ -248,8 +249,8 @@ def nita_px(px, date_vec, doy_vec,
     # 0.5 prepare x and y 
         # make a copy of orignial data pairs 
     
-        x = date_vec 
-        y = px 
+        x = copy.deepcopy(date_vec) 
+        y = copy.deepcopy(px) 
     
         x, y, doy_vec = filterLimits(x, y, doy_vec, value_limits, date_limits, doy_limits)
         
@@ -303,8 +304,8 @@ def nita_px(px, date_vec, doy_vec,
     # ---
     # 3. BIC removal process
             # *_max saved as copies (useful for debugging)
-            knots_max = knot_set
-            coeffs_max = coeff_set
+            knots_max = copy.deepcopy(knot_set)
+            coeffs_max = copy.deepcopy(coeff_set)
                  
             yinterp1 = np.interp(x, knot_set, coeff_set) # method linear as default
             y_pos_flags = (y - yinterp1) > 0  
