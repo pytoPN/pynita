@@ -119,10 +119,13 @@ class nitaObj:
         for OBJECTID in OBJECTIDs:
             
             i = OBJECTIDs.index(OBJECTID)
-                    
-            px = self.pts.loc[self.pts['OBJECTID'] == OBJECTID][user_vi].values
-            date_vec = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['date_dist'].values
-            doy_vec = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['doy'].values
+              
+            pt_OBJECTID = copy.deepcopy(self.pts.loc[self.pts['OBJECTID'] == OBJECTID])
+            pt_OBJECTID = pt_OBJECTID.sort_values(by=['date_dist'])
+            
+            px = pt_OBJECTID[user_vi].values
+            date_vec = pt_OBJECTID['date_dist'].values
+            doy_vec = pt_OBJECTID['doy'].values
             
             if len(px) == 0:
                 plt.close()
@@ -950,10 +953,13 @@ class nitaObj:
                     
                     handdraw_traj = [dic['traj'] for dic in self.handdraw_trajs if dic['OBJECTID'] == OBJECTID][0]
                     
-                    px = self.pts.loc[self.pts['OBJECTID'] == OBJECTID][user_vi].values
-                    date_vec = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['date_dist'].values
-                    doy_vec = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['doy'].values
-                
+                    pt_OBJECTID = copy.deepcopy(self.pts.loc[self.pts['OBJECTID'] == OBJECTID])
+                    pt_OBJECTID = pt_OBJECTID.sort_values(by=['date_dist'])
+            
+                    px = pt_OBJECTID[user_vi].values
+                    date_vec = pt_OBJECTID['date_dist'].values
+                    doy_vec = pt_OBJECTID['doy'].values
+                    
                     if len(px) == 0:
                         raise RuntimeError('in-valid one or more OBJECTID(s)') 
                 
