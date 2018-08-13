@@ -1,3 +1,4 @@
+import argparse
 import numpy as np
 from pynita import *
 
@@ -23,23 +24,26 @@ nita.loadPts(info_column='Name')
 
 ###
 # view the loaded table
-nita.pts
+#nita.pts
 # view the reference table 
-nita.ref_pts
+#nita.ref_pts
 # check the amount of unique OBJECTIDs
-nita.pts_count
+#nita.pts_count
 # check the OBJECTIDs
-nita.pts_OBJECTIDs
+#nita.pts_OBJECTIDs
 ###
 
 # run all points and view as panel plot  
-nita.runPts([9999], plot=True, max_plot=25, showdata='fit', colorbar=False, plot_title=True)
+#nita.runPts([9999], plot=True, max_plot=25, showdata='fit', colorbar=False, plot_title=True)
+
+
+#nita.runPts([9999], plot=True, max_plot=25, showdata='fit', colorbar=False, plot_title=True)
 
 # run specific OBJECTID
-results_dic = nita.runPts([4], plot=True, showdata='fit', colorbar=True, plot_title=True)    
+#results_dic = nita.runPts([1], plot=True, showdata='fit', colorbar=True, plot_title=True)    
 
 # run specific OBJECTID with parameter overwrite
-results_dic = nita.runPts([4], plot=True, showdata='fit', colorbar=True, plot_title=True, **{'min_complex': 5, 'max_complex': 20})
+results_dic = nita.runPts([1], plot=True, showdata='fit', colorbar=True, plot_title=True)
 
 # stop logging 
 nita.stopLog()
