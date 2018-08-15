@@ -200,6 +200,9 @@ def calBIC(ortho_err, knot_set, penalty):
     pars = stats.lognorm.fit(ortho_err[positive_flags])
     loglik = -1 * stats.lognorm.nnlf(pars, ortho_err[positive_flags])
 
+    #pars = stats.norm.fit(np.log(ortho_err[positive_flags]))
+    #loglik = -1 * stats.norm.nnlf(pars, np.log(ortho_err[positive_flags]))
+
     num_segs = len(knot_set)-1
 
     bic_remove = -2 * loglik + penalty * num_segs * math.log(len(ortho_err))
