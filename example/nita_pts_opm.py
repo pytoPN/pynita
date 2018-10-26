@@ -1,5 +1,6 @@
 import numpy as np
 from pynita import *
+import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-config_file', type=str, help='Full path with file name to INI configuration file.')
