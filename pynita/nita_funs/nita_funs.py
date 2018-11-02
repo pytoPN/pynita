@@ -145,7 +145,7 @@ def findCandidate(dist, filt_dist, pct,
         cand_loc = -999
         coeff = -999 
     else:
-        cand_loc = int(np.where(search_series.flatten() == search_series_inner.max())[0])
+        cand_loc = int(np.where(search_series.flatten() == search_series_inner.max())[0][0])
         cand_loc_filt = list(range(int(cand_loc - ((filt_dist - 1) / 2)), int(cand_loc + ((filt_dist - 1) / 2) + 1)))
         coeff = np.percentile(y[cand_loc_filt], pct, interpolation='midpoint')
         
