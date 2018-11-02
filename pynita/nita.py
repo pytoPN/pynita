@@ -892,6 +892,8 @@ class nitaObj:
             plot_y = self.pts.loc[self.pts['OBJECTID'] == OBJECTID][user_vi].values
             plot_x = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['date_dist'].values
             plot_doy = self.pts.loc[self.pts['OBJECTID'] == OBJECTID]['doy'].values
+ 
+            plot_x, plot_y, plot_doy = nf.filterLimits(plot_x, plot_y, plot_doy, self.cfg.param_nita['value_limits'], self.cfg.param_nita['date_limits'], self.cfg.param_nita['doy_limits'])
 
             if plot_title:
                 info_line = self.ref_pts.loc[self.ref_pts['OBJECTID'] == OBJECTID]
