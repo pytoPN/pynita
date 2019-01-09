@@ -14,5 +14,6 @@ setup(name='pynita',
                         'gdal>=2.1',
                         'pandas>=0.22',
                         'configobj>=5.0',
-                        'matplotlib>=2.1'],
+                        'matplotlib>=2.1',
+                        'PyQt5>=5.9.2'],
       zip_safe=False)
